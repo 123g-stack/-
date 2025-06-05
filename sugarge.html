@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>甜甜的魔法故事乐园 (V14.2 - Gist链接更新)</title>
+    <style>
+        :root { 
+            --primary-bg-color: #e0f7fa; --primary-text-color: #004d40; --theme-accent-color: #00bcd4;
+            --feature-bg-color: #ffffff; --feature-border-color: #b2ebf2; --gacha-button-text-color: #004d40; 
+            --draw-method-bg-color: #e0f7fa; --draw-method-border-color: #00bcd4; 
+            --draw-method-text-color: #00796b; --draw-method-hover-bg-color: #b2ebf2;
+            --stamina-bar-bg-color: #00acc1; --story-content-bg-color: #f0f8ff;
+            --story-content-border-color: #81d4fa; --placeholder-text-color: #546e7a;
+            --story-title-color: var(--theme-accent-color); 
+            --module-button-active-bg: var(--theme-accent-color); 
+            --module-button-active-text: #ffffff; 
+            --module-button-bg: #f0f0f0; 
+            --module-button-text: var(--primary-text-color); 
+            --pagination-btn-bg: var(--theme-accent-color);
+            --pagination-btn-text: #ffffff;
+            --pagination-btn-disabled-bg: #cccccc;
+            --pagination-btn-disabled-text: #888888;
+        }
+        body { font-family: 'Microsoft YaHei', sans-serif; margin: 0; padding: 20px; background-color: var(--primary-bg-color); color: var(--primary-text-color); transition: background-color 0.5s ease, color 0.5s ease; }
+        h1 { text-align: center; color: var(--theme-accent-color); margin-bottom: 30px; transition: color 0.5s ease; }
+        h2 { color: var(--theme-accent-color); border-bottom: 2px solid var(--theme-accent-color); padding-bottom: 5px; margin-bottom: 15px; transition: color 0.5s ease, border-color 0.5s ease; }
+        .feature-section { background-color: var(--feature-bg-color); border: 1px solid var(--feature-border-color); padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); transition: background-color 0.5s ease, border-color 0.5s ease; }
+        .story-draw-methods { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
+        .draw-method { border: 2px dashed var(--draw-method-border-color); padding: 15px 25px; cursor: pointer; background-color: var(--draw-method-bg-color); color: var(--draw-method-text-color); border-radius: 8px; text-align: center; font-weight: bold; transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+        .draw-method:hover:not(.disabled) { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); background-color: var(--draw-method-hover-bg-color); }
+        .draw-method.disabled { cursor: not-allowed; opacity: 0.6; background-color: #ccc !important; border-color: #aaa !important; color: #666 !important; box-shadow: none; transform: none; }
+        .draw-method.is-grabbing { animation: claw-machine-rumble 0.7s ease-in-out; }
+        @keyframes claw-machine-rumble { 0%, 100% { transform: translateX(0) rotate(0); } 15% { transform: translateX(-4px) rotate(-2deg); } 30% { transform: translateX(4px) rotate(2deg); } 45% { transform: translateX(-3px) rotate(-1deg); } 60% { transform: translateX(3px) rotate(1deg); } 75% { transform: translateX(-2px) rotate(0); } }
+        .draw-method.dart-throw-animation { animation: dart-throw 0.5s ease-out; } @keyframes dart-throw { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(3px, -3px) scale(1.05); } }
+        .draw-method.slot-spin-animation { animation: slot-spin 0.6s linear; } @keyframes slot-spin { 0%, 100% { transform: translateY(0); } 20% { transform: translateY(-4px); } 40% { transform: translateY(4px); }  60% { transform: translateY(-3px); } 80% { transform: translateY(3px); } }
+        .draw-method.coin-flip-animation { animation: coin-flip 0.7s ease-in-out; } @keyframes coin-flip { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }
+        .draw-method.cat-paw-animation { animation: cat-paw-press 0.4s ease-in-out; } @keyframes cat-paw-press { 0%, 100% { transform: scale(1); box-shadow: 0 2px 5px rgba(0,0,0,0.1); } 50% { transform: scale(0.95, 0.92); box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); } }
+        .draw-method.balloon-wiggle-animation { animation: balloon-wiggle 0.7s ease-in-out; } @keyframes balloon-wiggle { 0%, 100% { transform: rotate(0deg) translateX(0); } 20% { transform: rotate(4deg) translateX(2px); } 40% { transform: rotate(-4deg) translateX(-2px); } 60% { transform: rotate(3deg) translateX(1px); } 80% { transform: rotate(-3deg) translateX(-1px); } }
+        .theme-buttons .theme-btn { padding: 10px 18px; margin-right: 10px; margin-bottom: 10px; border: 2px solid transparent; border-radius: 8px; cursor: pointer; font-weight: bold; transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease;}
+        .theme-buttons .theme-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .theme-buttons .theme-btn.pink { background-color: #ffc0cb; color: #8B008B; } .theme-buttons .theme-btn.blue { background-color: #add8e6; color: #000080; }
+        .theme-buttons .theme-btn.green { background-color: #90ee90; color: #006400; } .theme-buttons .theme-btn.orange { background-color: #ffd580; color: #A0522D; }
+        .theme-buttons .theme-btn.purple { background-color: #e6e6fa; color: #483D8B; } .theme-buttons .theme-btn.yellow { background-color: #fffacd; color: #B8860B; }
+        .theme-buttons .theme-btn.dark { background-color: #555555; color: #ffffff; }
+        #stamina-bar-container { width: 100%; background-color: #e0e0e0; border-radius: 8px; height: 28px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        #stamina-bar { width: 100%; height: 100%; background-color: var(--stamina-bar-bg-color); text-align: center; line-height: 28px; color: white; font-weight: bold; border-radius: 8px; transition: width 0.5s ease, background-color 0.5s ease; }
+        #story-content { background-color: var(--story-content-bg-color); padding: 20px; border-left: 6px solid var(--story-content-border-color); min-height: 120px; border-radius: 0 8px 8px 0; transition: background-color 0.5s ease, border-color 0.5s ease; line-height: 1.6; }
+        #story-content h3 { margin-top: 0; color: var(--story-title-color); transition: color 0.5s ease; }
+        .placeholder-text { color: var(--placeholder-text-color); font-style: italic; font-size: 0.9em; transition: color 0.5s ease; }
+        .loading-message { text-align: center; padding: 20px; font-style: italic; color: var(--placeholder-text-color); }
+        .gacha-button { display: block; margin: 10px auto 20px auto; padding: 12px 28px; background-color: var(--theme-accent-color); color: var(--gacha-button-text-color); border: none; border-radius: 25px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.2s ease, color 0.3s ease; }
+        .gacha-button:hover { transform: scale(1.05) translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); filter: brightness(110%); }
+        .gacha-button:active { transform: scale(0.98) translateY(0px); }
+        #prompt-gacha-display { background-color: var(--story-content-bg-color); border: 2px dashed var(--draw-method-border-color); padding: 25px; border-radius: 8px; min-height: 100px; display: flex; justify-content: center; align-items: center; text-align: center; font-size: 1.15em; color: var(--primary-text-color); line-height: 1.5; box-shadow: inset 0 0 10px rgba(0,0,0,0.03); transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease; }
+        .shake-animation { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0) rotate(-1deg); } 20%, 80% { transform: translate3d(2px, 0, 0) rotate(1deg); } 30%, 50%, 70% { transform: translate3d(-2px, 0, 0) rotate(-2deg); } 40%, 60% { transform: translate3d(2px, 0, 0) rotate(2deg); } }
+        #paperball-trigger { display: block; width: fit-content; padding: 15px 25px; background-color: var(--draw-method-bg-color); border: 2px dashed var(--draw-method-border-color); border-radius: 10px; cursor: pointer; text-align: center; font-size: 1.2em; font-weight: bold; margin: 0 auto 20px auto; color: var(--draw-method-text-color); transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease; }
+        #paperball-trigger:hover { transform: scale(1.05); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .module-buttons-container { display: none; flex-wrap: wrap; gap: 15px; margin-top: 20px; margin-bottom: 20px; justify-content: center; }
+        .module-btn { padding: 10px 20px; font-size: 1em; font-weight: bold; border: 2px solid var(--theme-accent-color); border-radius: 8px; cursor: pointer; background-color: var(--module-button-bg); color: var(--module-button-text); transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; }
+        .module-btn:hover { transform: translateY(-2px); filter: brightness(110%); }
+        .module-btn.active { background-color: var(--module-button-active-bg); color: var(--module-button-active-text); box-shadow: 0 0 10px var(--module-button-active-bg); }
+        .module-content { border: 1px dashed var(--feature-border-color); padding: 15px; margin-top: 10px; border-radius: 8px; background-color: var(--feature-bg-color); display: none; line-height: 1.6; transition: background-color 0.5s ease, border-color 0.5s ease; }
+        .module-item-display { min-height: 150px; padding: 10px; margin-bottom: 15px; border-radius: 5px; }
+        .module-item-display p, .module-item-display li { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dotted var(--feature-border-color); }
+        .module-item-display p > span:first-child, .module-item-display li > span:first-child { flex-grow: 1; margin-right: 10px; }
+        .module-item-display p:last-child, .module-item-display li:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .module-pagination-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--feature-border-color); }
+        .pagination-btn { padding: 8px 16px; background-color: var(--pagination-btn-bg); color: var(--pagination-btn-text); border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease, transform 0.2s ease, color 0.3s ease; }
+        .pagination-btn:hover:not([disabled]) { filter: brightness(110%); transform: translateY(-1px); }
+        .pagination-btn:disabled { background-color: var(--pagination-btn-disabled-bg) !important; color: var(--pagination-btn-disabled-text) !important; cursor: not-allowed; opacity: 0.7; }
+        .page-info { font-weight: bold; color: var(--primary-text-color); }
+        #persona-area { text-align: center; }
+        .persona-claw-machine { display: inline-flex; flex-direction: column; align-items: center; padding: 20px; background-color: var(--draw-method-bg-color); border: 3px solid var(--draw-method-border-color); border-radius: 15px; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; margin-bottom: 20px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+        .persona-claw-machine:hover { transform: scale(1.03); box-shadow: 0 8px 15px rgba(0,0,0,0.15); }
+        .persona-claw-machine .claw-emoji { font-size: 3em; margin-bottom: 10px; display: inline-block; }
+        .persona-claw-machine p { margin: 0; font-weight: bold; color: var(--draw-method-text-color); }
+        .persona-trait-display-area { margin-top: 15px; padding: 20px; background-color: var(--story-content-bg-color); border: 2px dashed var(--theme-accent-color); border-radius: 8px; min-height: 50px; display: flex; justify-content: center; align-items: center; text-align: center; font-size: 1.2em; font-weight: bold; color: var(--primary-text-color); }
+        .persona-machine-shake { animation: machine-shake-strong 0.6s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes machine-shake-strong { 10%, 90% { transform: translate3d(-2px, 0, 0) rotate(-3deg); } 20%, 80% { transform: translate3d(3px, 0, 0) rotate(3deg); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0) rotate(-4deg); } 40%, 60% { transform: translate3d(4px, 0, 0) rotate(4deg); } }
+        
+        .copy-btn-item { margin-left: 10px; padding: 3px 8px; font-size: 0.8em; background-color: var(--draw-method-hover-bg-color); color: var(--draw-method-text-color); border: 1px solid var(--draw-method-border-color); border-radius: 4px; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease; flex-shrink: 0; }
+        .copy-btn-item:hover { filter: brightness(120%); }
+        .copy-btn-module-all { margin-left: 15px; padding: 5px 10px; font-size: 0.9em; background-color: var(--theme-accent-color); color: var(--pagination-btn-text); border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease; }
+        .copy-btn-module-all:hover { filter: brightness(110%); }
+        .copy-btn-section { display: block; width: fit-content; margin: 15px auto 5px auto; padding: 8px 15px; font-size: 0.95em; font-weight: bold; background-color: var(--draw-method-bg-color); color: var(--draw-method-text-color); border: 2px dashed var(--draw-method-border-color); border-radius: 8px; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+        .copy-btn-section:hover { background-color: var(--draw-method-hover-bg-color); filter: brightness(105%); }
+        .copied-feedback { background-color: #28a745 !important; color: white !important; border-color: #28a745 !important; }
+    </style>
+</head>
+<body>
+
+    <h1>欢迎来到甜甜的魔法故事乐园！</h1>
+
+    <div class="feature-section" id="theme-selector-area"><h2>🎨 主题颜色选择</h2><div class="theme-buttons"><button class="theme-btn pink" data-theme="pink">甜甜粉</button><button class="theme-btn blue" data-theme="blue">天空蓝</button><button class="theme-btn green" data-theme="green">森林绿</button><button class="theme-btn orange" data-theme="orange">活力橙</button><button class="theme-btn purple" data-theme="purple">星空紫</button><button class="theme-btn yellow" data-theme="yellow">柠檬黄</button><button class="theme-btn dark" data-theme="dark">暗夜黑</button></div><p class="placeholder-text">（点击按钮切换整个页面的颜色主题）</p></div>
+    <div class="feature-section" id="story-draw-area"><h2>✨ 抽取故事的方式</h2><div class="story-draw-methods"><div class="draw-method" id="draw-darts">🎯 飞镖</div><div class="draw-method" id="draw-slot-machine">🎰 老虎机</div><div class="draw-method" id="draw-coin-toss">🪙 投币</div><div class="draw-method" id="draw-cat-paw">🐾 喵爪</div><div class="draw-method" id="draw-balloon">🎈 气球</div><div class="draw-method" id="draw-claw-machine">🧸 娃娃机</div></div><p class="placeholder-text">（点击按钮抽取故事）</p></div>
+    <div class="feature-section" id="persona-area"><h2>🎭 我的人设娃娃机</h2><div id="persona-claw-machine-trigger" class="persona-claw-machine"><span class="claw-emoji">🧸</span><p>点击抽取今日人设！</p></div><div id="persona-trait-display" class="persona-trait-display-area"><p class="placeholder-text">今天会是什么样的我呢？</p></div><button id="copy-persona-btn" class="copy-btn-section" title="复制人设">📋 复制今日人设</button><p class="placeholder-text" style="text-align:center; margin-top:10px;">（人设“奖品”会在数据加载后可用）</p></div>
+    <div class="feature-section" id="stamina-area"><h2>💪 体力值</h2> <p>当前体力：<span id="stamina-value-display">100</span> / 100</p> <div id="stamina-bar-container"><div id="stamina-bar">100%</div></div> <p class="placeholder-text">（每次抽取故事会消耗体力，体力会缓慢自动恢复哦！）</p></div>
+    <div class="feature-section" id="prompt-area"><h2>💡 Prompt区 (灵感摇蛋机)</h2> <button id="gacha-prompt-button" class="gacha-button">✨ 摇个灵感！</button> <div id="prompt-gacha-display"><p class="placeholder-text">点按钮摇Prompt吧！</p></div><button id="copy-prompt-btn" class="copy-btn-section" title="复制灵感">📋 复制灵感</button></div>
+    <div class="feature-section" id="story-display-area"><h2>📜 文案区 (故事内容)</h2><div id="story-content"><p class="placeholder-text">抽到的故事会显示在这！</p></div><button id="copy-story-btn" class="copy-btn-section" title="复制故事">📋 复制故事</button></div>
+    <div class="feature-section" id="featured-modules-area"> <h2>💖 特色模块探索</h2><div id="paperball-trigger">📄 点我展开问卷入口~</div> <div class="module-buttons-container"> <button class="module-btn" data-module="pureLove">纯爱小屋 🌸</button><button class="module-btn" data-module="privateRealm">神秘花园 🤫</button> </div><div class="module-content" id="content-pureLove"><h3>欢迎来到纯爱小屋 <button class="copy-btn-module-all" id="pureLove-copy-all-btn" title="复制本屋所有条目">📋 复制全部</button></h3><div class="module-item-display" id="pureLove-item-display"><p class="placeholder-text">模块内容加载中或加载失败...</p></div><div class="module-pagination-controls"><button class="pagination-btn prev" id="pureLove-prev-btn">&lt; 上一页</button><span class="page-info" id="pureLove-page-info"></span><button class="pagination-btn next" id="pureLove-next-btn">下一页 &gt;</button></div><p class="placeholder-text" style="margin-top:15px;">（特色模块条目会从Gist加载）</p></div><div class="module-content" id="content-privateRealm"><h3>探索神秘花园 <button class="copy-btn-module-all" id="privateRealm-copy-all-btn" title="复制本园所有条目">📋 复制全部</button></h3><div class="module-item-display" id="privateRealm-item-display"><p class="placeholder-text">模块内容加载中或加载失败...</p></div><div class="module-pagination-controls"><button class="pagination-btn prev" id="privateRealm-prev-btn">&lt; 上一页</button><span class="page-info" id="privateRealm-page-info"></span><button class="pagination-btn next" id="privateRealm-next-btn">下一页 &gt;</button></div><p class="placeholder-text" style="margin-top:15px;">（特色模块条目会从Gist加载）</p></div></div>
+
+<script>
+    // JavaScript 魔法开始！
+    console.log("[魔法乐园日志 V14.2 Gist链接再次更新版] 脚本开始运行！");
+
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log("[魔法乐园日志 V14.2 Gist链接再次更新版] DOM完全加载，准备加载外部数据。");
+
+    const rootElement = document.documentElement;
+    if (!rootElement) console.error("[LOG] CRITICAL: rootElement (html) 未找到!");
+
+    // --- Gist Raw URLS (使用甜甜最新提供的链接) ---
+    const PROMPTS_GIST_URL = 'https://gist.githubusercontent.com/123g-stack/44ba2dc940723c1cc3adfe65445321a4/raw/23221be277a73165140aea8e97f8f10e93c5779e/prompts.json';
+    const STORIES_GIST_URL = 'https://gist.githubusercontent.com/123g-stack/9143bd88dd6cd7c88d0d5efe3d131645/raw/5aa850b34c7e93fedf03a4978e6bad5646fd048e/stories.json';
+    const PERSONA_ITEMS_GIST_URL = 'https://gist.githubusercontent.com/123g-stack/e0667bc86614abdc92d12254997b369d/raw/2be6b93bbc222baa9ea2cc164c81929890c30f8f/personaItems.json';
+    const MODULE_DATA_GIST_URL = ' https://gist.githubusercontent.com/123g-stack/45afe17dbd91ebb37a6daffb1debb30a/raw/d95659d0ccbae794fa692d6f7b0b99fef1034157/moduleData.json';
+
+    // --- 初始化数据变量 (用备用数据作为初始值和加载失败的后备) ---
+    let prompts = ["加载中，请稍候..."];
+    let stories = { common: [{title:"加载中...", content:"请稍候..."}] };
+    let personaItems = ["加载中，请稍候..."];
+    let moduleData = {
+        pureLove: { items: ["加载中..."], currentPage: 1 },
+        privateRealm: { items: ["加载中..."], currentPage: 1 }
+    };
+    let allDataLoadedSuccessfully = true; 
+
+    // --- UI元素获取 ---
+    const promptGachaDisplay = document.getElementById('prompt-gacha-display');
+    const storyDisplayContentElement = document.getElementById('story-content');
+    const personaTraitDisplay = document.getElementById('persona-trait-display');
+    const pureLoveItemDisplay = document.getElementById('pureLove-item-display');
+    const privateRealmItemDisplay = document.getElementById('privateRealm-item-display');
+
+    // --- 异步加载数据的函数 ---
+    async function fetchData(url, fallbackData, dataName) {
+        if (dataName === 'Prompts' && promptGachaDisplay) promptGachaDisplay.innerHTML = '<p class="loading-message">灵感加载中...</p>';
+        if (dataName === 'Stories' && storyDisplayContentElement) storyDisplayContentElement.innerHTML = '<p class="loading-message">故事加载中...</p>';
+        if (dataName === 'PersonaItems' && personaTraitDisplay) personaTraitDisplay.innerHTML = '<p class="loading-message">人设加载中...</p>';
+        if (dataName === 'ModuleData') {
+            if(pureLoveItemDisplay) pureLoveItemDisplay.innerHTML = '<p class="loading-message">纯爱小屋内容加载中...</p>';
+            if(privateRealmItemDisplay) privateRealmItemDisplay.innerHTML = '<p class="loading-message">神秘花园内容加载中...</p>';
+        }
+
+        try {
+            if (url.trim() === '' || url.includes("【") || url.includes("占位符")) {
+                console.warn(`[LOG] ${dataName}使用的是占位符URL或URL为空 ('${url}')，将使用备用数据。`);
+                throw new Error('Placeholder or empty URL for ' + dataName);
+            }
+            const response = await fetch(url, { cache: "no-store" }); 
+            if (!response.ok) {
+                throw new Error(`网络请求 ${dataName} 失败: ${response.status} ${response.statusText} (URL: ${url})`);
+            }
+            const jsonData = await response.json();
+            console.log(`[LOG] ${dataName} 数据已成功从Gist加载！ 内容片段:`, JSON.stringify(jsonData).substring(0,100));
+            return jsonData;
+        } catch (error) {
+            console.error(`[LOG] 加载 ${dataName} 数据失败:`, error.message, `将使用备用数据。`);
+            allDataLoadedSuccessfully = false; 
+            return fallbackData;
+        }
+    }
+
+    // --- 等待所有核心数据加载完成 ---
+    try {
+        [
+            prompts,
+            stories,
+            personaItems,
+            moduleData
+        ] = await Promise.all([
+            fetchData(PROMPTS_GIST_URL, ["备用提示1：Gist链接无效或网络不佳。", "备用提示2：请检查Gist链接。"], 'Prompts'),
+            fetchData(STORIES_GIST_URL, { common: [{title:"备用故事", content:"Gist链接无效或网络不佳。"}] }, 'Stories'),
+            fetchData(PERSONA_ITEMS_GIST_URL, ["备用人设1：Gist链接可能无效。", "备用人设2：检查网络。"], 'PersonaItems'),
+            fetchData(MODULE_DATA_GIST_URL, { 
+                pureLove: { items: ["备用纯爱条目：Gist链接问题。"], currentPage: 1 }, 
+                privateRealm: { items: ["备用神秘条目：Gist链接问题。"], currentPage: 1 } 
+            }, 'ModuleData')
+        ]);
+        
+        console.log("[LOG] 所有核心外部数据均已尝试加载完毕！");
+        console.log("[LOG] Prompts 加载后: ", prompts);
+        console.log("[LOG] Stories 加载后: ", stories);
+        console.log("[LOG] PersonaItems 加载后: ", personaItems);
+        console.log("[LOG] ModuleData 加载后: ", moduleData);
+
+
+        if(promptGachaDisplay) promptGachaDisplay.innerHTML = '<p class="placeholder-text">点按钮摇Prompt吧！</p>';
+        if(storyDisplayContentElement) storyDisplayContentElement.innerHTML = '<p class="placeholder-text">抽到的故事会显示在这！</p>';
+        if(personaTraitDisplay) personaTraitDisplay.innerHTML = '<p class="placeholder-text">今天会是什么样的我呢？</p>';
+        
+        const activeButton = document.querySelector('.module-btn.active');
+        if (activeButton) {
+            const activeModule = activeButton.dataset.module;
+            if (moduleData && moduleData[activeModule] && moduleData[activeModule].items && moduleData[activeModule].items.length > 0 && !(moduleData[activeModule].items.length > 0 && moduleData[activeModule].items[0].includes("备用"))) {
+                moduleData[activeModule].currentPage = 1;
+                displayModuleItems(activeModule); 
+            } else { 
+                const displayElement = document.getElementById(`${activeModule}-item-display`);
+                if(displayElement) displayElement.innerHTML = `<p class="placeholder-text" style="color:red;">${activeModule} 模块内容加载失败或为空!</p>`;
+            }
+        } else { 
+             if(pureLoveItemDisplay && document.getElementById('content-pureLove').style.display === 'block') {
+                if (moduleData.pureLove && moduleData.pureLove.items && moduleData.pureLove.items.length > 0 && !(moduleData.pureLove.items.length > 0 && moduleData.pureLove.items[0].includes("备用"))) displayModuleItems('pureLove');
+                else if(pureLoveItemDisplay) pureLoveItemDisplay.innerHTML = '<p class="placeholder-text">纯爱小屋内容加载失败或为空...</p>';
+             }
+             if(privateRealmItemDisplay && document.getElementById('content-privateRealm').style.display === 'block'){
+                if (moduleData.privateRealm && moduleData.privateRealm.items && moduleData.privateRealm.items.length > 0 && !(moduleData.privateRealm.items.length > 0 && moduleData.privateRealm.items[0].includes("备用"))) displayModuleItems('privateRealm');
+                else if(privateRealmItemDisplay) privateRealmItemDisplay.innerHTML = '<p class="placeholder-text">神秘花园内容加载失败或为空...</p>';
+             }
+        }
+
+    } catch (error) {
+        console.error("[LOG] Promise.all 加载数据时发生意外错误:", error);
+        allDataLoadedSuccessfully = false; 
+        if(promptGachaDisplay) promptGachaDisplay.innerHTML = '<p class="placeholder-text" style="color:red;">部分核心数据加载失败，功能可能受限。</p>';
+    }
+
+    // =======================================================================
+    //  魔法乐园的其他所有JavaScript逻辑代码 (基于V13版本)
+    // =======================================================================
+
+    // --- 主题颜色切换功能 ---
+    const themeButtons = document.querySelectorAll('.theme-buttons .theme-btn');
+    const themes = { 
+            pink: { '--primary-bg-color': '#fff0f5', '--primary-text-color': '#5d3c50', '--theme-accent-color': '#ff69b4', '--feature-bg-color': '#ffffff', '--feature-border-color': '#ffc0cb', '--gacha-button-text-color': '#ffffff', '--draw-method-bg-color': '#ffe4e1', '--draw-method-border-color': '#ff69b4', '--draw-method-text-color': '#c71585', '--draw-method-hover-bg-color': '#ffb6c1', '--stamina-bar-bg-color': '#ff69b4', '--story-content-bg-color': '#fffafa', '--story-content-border-color': '#ffb6c1', '--placeholder-text-color': '#a07080', '--story-title-color': '#ff69b4', '--module-button-active-bg': '#ff69b4', '--module-button-active-text': '#ffffff', '--module-button-bg': '#ffe4e1', '--module-button-text': '#c71585', '--pagination-btn-bg': '#ff69b4', '--pagination-btn-text': '#ffffff', '--pagination-btn-disabled-bg': '#ffdbe7', '--pagination-btn-disabled-text': '#ff8cc6'},
+            blue: { '--primary-bg-color': '#e0f7fa', '--primary-text-color': '#004d40', '--theme-accent-color': '#00bcd4', '--feature-bg-color': '#ffffff', '--feature-border-color': '#b2ebf2', '--gacha-button-text-color': '#004d40', '--draw-method-bg-color': '#e0f7fa', '--draw-method-border-color': '#00bcd4', '--draw-method-text-color': '#00796b', '--draw-method-hover-bg-color': '#b2ebf2', '--stamina-bar-bg-color': '#00acc1', '--story-content-bg-color': '#f0f8ff', '--story-content-border-color': '#81d4fa', '--placeholder-text-color': '#546e7a', '--story-title-color': '#00bcd4', '--module-button-active-bg': '#00bcd4', '--module-button-active-text': '#ffffff', '--module-button-bg': '#e0f7fa', '--module-button-text': '#00796b', '--pagination-btn-bg': '#00bcd4', '--pagination-btn-text': '#ffffff', '--pagination-btn-disabled-bg': '#b3e5fc', '--pagination-btn-disabled-text': '#007ac1'},
+            green: {'--primary-bg-color': '#e8f5e9', '--primary-text-color': '#1b5e20', '--theme-accent-color': '#4caf50', '--feature-bg-color': '#ffffff', '--feature-border-color': '#c8e6c9', '--gacha-button-text-color': '#ffffff', '--draw-method-bg-color': '#e8f5e9', '--draw-method-border-color': '#4caf50', '--draw-method-text-color': '#2e7d32', '--draw-method-hover-bg-color': '#c8e6c9', '--stamina-bar-bg-color': '#388e3c', '--story-content-bg-color': '#f1f8e9', '--story-content-border-color': '#a5d6a7', '--placeholder-text-color': '#556b2f', '--story-title-color': '#4caf50', '--module-button-active-bg': '#4caf50', '--module-button-active-text': '#ffffff', '--module-button-bg': '#e8f5e9', '--module-button-text': '#2e7d32', '--pagination-btn-bg': '#4caf50', '--pagination-btn-text': '#ffffff', '--pagination-btn-disabled-bg': '#c8e6c9', '--pagination-btn-disabled-text': '#388e3c'},
+            orange: {'--primary-bg-color': '#fff3e0', '--primary-text-color': '#e65100', '--theme-accent-color': '#ff9800', '--feature-bg-color': '#ffffff', '--feature-border-color': '#ffe0b2', '--gacha-button-text-color': '#8c0000', '--draw-method-bg-color': '#fff3e0', '--draw-method-border-color': '#ff9800', '--draw-method-text-color': '#f57c00', '--draw-method-hover-bg-color': '#ffe0b2', '--stamina-bar-bg-color': '#fb8c00', '--story-content-bg-color': '#fff8e1', '--story-content-border-color': '#ffcc80', '--placeholder-text-color': '#bf360c', '--story-title-color': '#ff9800', '--module-button-active-bg': '#ff9800', '--module-button-active-text': '#ffffff', '--module-button-bg': '#fff3e0', '--module-button-text': '#f57c00', '--pagination-btn-bg': '#ff9800', '--pagination-btn-text': '#ffffff', '--pagination-btn-disabled-bg': '#ffe0b2', '--pagination-btn-disabled-text': '#e65100'},
+            purple: {'--primary-bg-color': '#f3e5f5', '--primary-text-color': '#4a148c', '--theme-accent-color': '#9c27b0', '--feature-bg-color': '#ffffff', '--feature-border-color': '#e1bee7', '--gacha-button-text-color': '#ffffff', '--draw-method-bg-color': '#f3e5f5', '--draw-method-border-color': '#9c27b0', '--draw-method-text-color': '#7b1fa2', '--draw-method-hover-bg-color': '#e1bee7', '--stamina-bar-bg-color': '#8e24aa', '--story-content-bg-color': '#f9f0ff', '--story-content-border-color': '#d1c4e9', '--placeholder-text-color': '#6a1b9a', '--story-title-color': '#9c27b0', '--module-button-active-bg': '#9c27b0', '--module-button-active-text': '#ffffff', '--module-button-bg': '#f3e5f5', '--module-button-text': '#7b1fa2', '--pagination-btn-bg': '#9c27b0', '--pagination-btn-text': '#ffffff', '--pagination-btn-disabled-bg': '#e1bee7', '--pagination-btn-disabled-text': '#6a1b9a'},
+            yellow: {'--primary-bg-color': '#fffde7', '--primary-text-color': '#f57f17', '--theme-accent-color': '#fdd835', '--feature-bg-color': '#ffffff', '--feature-border-color': '#fff9c4', '--gacha-button-text-color': '#827717', '--draw-method-bg-color': '#fffde7', '--draw-method-border-color': '#fdd835', '--draw-method-text-color': '#fbc02d', '--draw-method-hover-bg-color': '#fff9c4', '--stamina-bar-bg-color': '#fbc02d', '--story-content-bg-color': '#floralwhite', '--story-content-border-color': '#fff59d', '--placeholder-text-color': '#b28704', '--story-title-color': '#fdd835', '--module-button-active-bg': '#fdd835', '--module-button-active-text': '#827717', '--module-button-bg': '#fffde7', '--module-button-text': '#fbc02d', '--pagination-btn-bg': '#fdd835', '--pagination-btn-text': '#827717', '--pagination-btn-disabled-bg': '#fff9c4', '--pagination-btn-disabled-text': '#c49000'},
+            dark: { '--primary-bg-color': '#212121', '--primary-text-color': '#e0e0e0', '--theme-accent-color': '#757575', '--feature-bg-color': '#303030', '--feature-border-color': '#424242', '--gacha-button-text-color': '#ffffff', '--draw-method-bg-color': '#424242', '--draw-method-border-color': '#757575', '--draw-method-text-color': '#e0e0e0', '--draw-method-hover-bg-color': '#525252', '--stamina-bar-bg-color': '#616161', '--story-content-bg-color': '#262626', '--story-content-border-color': '#616161', '--placeholder-text-color': '#9e9e9e', '--story-title-color': '#757575', '--module-button-active-bg': '#757575', '--module-button-active-text': '#212121', '--module-button-bg': '#424242', '--module-button-text': '#e0e0e0', '--pagination-btn-bg': '#757575', '--pagination-btn-text': '#212121', '--pagination-btn-disabled-bg': '#424242', '--pagination-btn-disabled-text': '#9e9e9e'}
+    };
+    if (themeButtons.length > 0) { themeButtons.forEach(button => { button.addEventListener('click', function() { const themeName = this.dataset.theme; rootElement.style.setProperty('--current-theme-name', themeName); const selectedTheme = themes[themeName]; if (selectedTheme) { for (const variable in selectedTheme) { rootElement.style.setProperty(variable, selectedTheme[variable]); } } updateStaminaVisuals(); updateModuleButtonStyles(); updateAllPaginationButtonsStyle(); }); });} else { console.warn("[LOG] 未找到主题按钮。");}
+    
+    // --- 体力值系统 ---
+    const staminaDisplayElement = document.getElementById('stamina-value-display'); const staminaBarElement = document.getElementById('stamina-bar'); let currentStamina = 100; const maxStamina = 100; const staminaCostPerDraw = 10; const staminaRegenAmount = 1; const staminaRegenInterval = 5000; function updateStaminaVisuals() { if (!staminaDisplayElement || !staminaBarElement) { return; } staminaDisplayElement.textContent = currentStamina; const percentage = (currentStamina / maxStamina) * 100; staminaBarElement.style.width = percentage + '%'; staminaBarElement.textContent = Math.round(percentage) + '%'; const currentThemeName = rootElement.style.getPropertyValue('--current-theme-name') || 'blue'; const currentThemeColors = themes[currentThemeName]; let staminaBarColor = currentThemeColors ? currentThemeColors['--stamina-bar-bg-color'] : '#00acc1'; if (percentage < 30) { staminaBarColor = '#d9534f'; } else if (percentage < 60) { staminaBarColor = '#f0ad4e'; } staminaBarElement.style.backgroundColor = staminaBarColor; const drawMethodButtons = document.querySelectorAll('.draw-method'); drawMethodButtons.forEach(btn => { if (currentStamina < staminaCostPerDraw) { btn.classList.add('disabled'); btn.title = "体力不足啦！"; } else { btn.classList.remove('disabled'); btn.title = ""; } }); } function regenerateStamina() { if (currentStamina < maxStamina) { currentStamina += staminaRegenAmount; if (currentStamina > maxStamina) { currentStamina = maxStamina; } updateStaminaVisuals(); } } setInterval(regenerateStamina, staminaRegenInterval); updateStaminaVisuals(); 
+    
+    // --- Prompt摇蛋机 功能 ---
+    const gachaPromptButton = document.getElementById('gacha-prompt-button');
+    if (gachaPromptButton && promptGachaDisplay) { gachaPromptButton.addEventListener('click', function() { if (!allDataLoadedSuccessfully && prompts[0].includes("备用") ) { promptGachaDisplay.innerHTML = '<p class="loading-message">提示词还在努力加载中或加载失败，请稍等或检查Gist链接~</p>'; return; } this.classList.add('shake-animation'); setTimeout(() => { this.classList.remove('shake-animation'); }, 500); if (!prompts || prompts.length === 0 || (prompts.length > 0 && prompts[0].includes("备用"))) { promptGachaDisplay.innerHTML = '<p class="placeholder-text" style="color:orange;">哎呀，灵感池好像空了！(或者没加载成功)</p>'; return; } const randomIndex = Math.floor(Math.random() * prompts.length); const randomPrompt = prompts[randomIndex]; promptGachaDisplay.innerHTML = ''; setTimeout(() => { const promptTextElement = document.createElement('p'); promptTextElement.textContent = randomPrompt; promptGachaDisplay.appendChild(promptTextElement); }, 150); }); } else { console.error("[LOG] 摇蛋机按钮或显示区未找到。"); }
+    
+    // --- 故事数据和抽取逻辑 ---
+    if (!storyDisplayContentElement) console.error("[LOG] CRITICAL: storyDisplayContentElement 未找到!"); 
+    function drawStory() { if (!allDataLoadedSuccessfully && stories.common && stories.common.length > 0 && stories.common[0]?.title === "备用故事" ) { storyDisplayContentElement.innerHTML = '<p class="loading-message">故事还在努力加载中或加载失败，请稍等或检查Gist链接~</p>'; return; } if (!storyDisplayContentElement) { return; } if (currentStamina < staminaCostPerDraw) { storyDisplayContentElement.innerHTML = `<p class="placeholder-text" style="color: red; font-weight: bold;">体力不足，无法抽取故事啦！</p>`; return; } const rarityKeys = Object.keys(stories); if (rarityKeys.length === 0 || (rarityKeys.length === 1 && rarityKeys[0] === "common" && stories.common[0]?.title === "备用故事") ) { storyDisplayContentElement.innerHTML = `<p class="placeholder-text" style="color:orange;">故事书是空的！(或者没加载成功)</p>`; return; } let randomRarityKey = rarityKeys[Math.floor(Math.random() * rarityKeys.length)]; let storiesInRarity = stories[randomRarityKey]; if (!storiesInRarity || storiesInRarity.length === 0) { // 如果某个稀有度分类是空的，尝试下一个
+        let attempts = 0;
+        while ((!storiesInRarity || storiesInRarity.length === 0) && attempts < rarityKeys.length) {
+            randomRarityKey = rarityKeys[Math.floor(Math.random() * rarityKeys.length)];
+            storiesInRarity = stories[randomRarityKey];
+            attempts++;
+        }
+        if (!storiesInRarity || storiesInRarity.length === 0) {
+             storyDisplayContentElement.innerHTML = `<p class="placeholder-text" style="color:orange;">所有类别的故事都暂时没有哦！</p>`; return;
+        }
+    } let randomStory = storiesInRarity[Math.floor(Math.random() * storiesInRarity.length)]; if (!randomStory || typeof randomStory.title === 'undefined' || typeof randomStory.content === 'undefined') { storyDisplayContentElement.innerHTML = `<p class="placeholder-text" style="color:red;">抽到空白页！</p>`; return; } storyDisplayContentElement.innerHTML = `<h3>${randomStory.title}</h3><p>${randomStory.content}</p>`; currentStamina -= staminaCostPerDraw; updateStaminaVisuals(); } 
+    function setupAnimatedDrawButton(buttonId, processingText, animationClass, animationDuration = 700) { const button = document.getElementById(buttonId); if (button && storyDisplayContentElement) { button.addEventListener('click', function() { if (this.classList.contains('disabled')) { return; } const originalText = this.innerHTML; const originalCursor = this.style.cursor; this.innerHTML = processingText || "抽取中..."; this.classList.add('disabled'); this.style.cursor = 'wait'; if (animationClass) { this.classList.add(animationClass); } if (currentStamina >= staminaCostPerDraw && allDataLoadedSuccessfully) { storyDisplayContentElement.innerHTML = `<p class="placeholder-text">正在抽取...</p>`; } else if (!allDataLoadedSuccessfully) { storyDisplayContentElement.innerHTML = `<p class="loading-message">数据加载中/失败，请稍后...</p>`; } setTimeout(() => { if (animationClass) { this.classList.remove(animationClass); } drawStory(); this.innerHTML = originalText; this.style.cursor = originalCursor; if (currentStamina < staminaCostPerDraw) { this.classList.add('disabled');} else { this.classList.remove('disabled'); } }, animationDuration); }); } else { if (!button) console.error(`[LOG] 动画按钮 #${buttonId} 未找到`); } }
+    setupAnimatedDrawButton('draw-darts', '🎯 命中目标...', 'dart-throw-animation', 500); setupAnimatedDrawButton('draw-slot-machine', '🎰 转动中...', 'slot-spin-animation', 600); setupAnimatedDrawButton('draw-coin-toss', '🪙 命运一掷...', 'coin-flip-animation', 700); setupAnimatedDrawButton('draw-cat-paw', '🐾 喵力出击...', 'cat-paw-animation', 400); setupAnimatedDrawButton('draw-balloon', '🎈 戳破惊喜...', 'balloon-wiggle-animation', 700); const clawMachineButton = document.getElementById('draw-claw-machine'); if (clawMachineButton && storyDisplayContentElement) { clawMachineButton.addEventListener('click', function() { if (this.classList.contains('disabled')) { return; } const originalText = this.innerHTML; const originalCursor = this.style.cursor; this.innerHTML = "🧸 抓取中..."; this.classList.add('disabled'); this.style.cursor = 'wait'; this.classList.add('is-grabbing'); if (currentStamina >= staminaCostPerDraw && allDataLoadedSuccessfully) { storyDisplayContentElement.innerHTML = `<p class="placeholder-text">娃娃机努力抓取中...</p>`;} else if (!allDataLoadedSuccessfully) { storyDisplayContentElement.innerHTML = `<p class="loading-message">数据加载中/失败，请稍后...</p>`; } setTimeout(() => { this.classList.remove('is-grabbing'); drawStory(); this.innerHTML = originalText; this.style.cursor = originalCursor; if (currentStamina < staminaCostPerDraw) { this.classList.add('disabled'); } else { this.classList.remove('disabled'); } }, 700); });}
+    
+    // --- 人设娃娃机功能 ---
+    const personaClawMachine = document.getElementById('persona-claw-machine-trigger');
+    if (personaClawMachine && personaTraitDisplay) { personaClawMachine.addEventListener('click', function() { if (!allDataLoadedSuccessfully && personaItems[0].includes("备用") ) { personaTraitDisplay.innerHTML = '<p class="loading-message">人设还在努力加载中或加载失败，请稍等或检查Gist链接~</p>'; return; } this.classList.add('persona-machine-shake'); personaTraitDisplay.innerHTML = '<p class="placeholder-text">抓取今日人设中...</p>'; setTimeout(() => { this.classList.remove('persona-machine-shake'); if (!personaItems || personaItems.length === 0 || (personaItems.length > 0 && personaItems[0].includes("备用"))) { personaTraitDisplay.innerHTML = '<p class="placeholder-text" style="color:orange;">人设池空啦！(或者没加载成功)</p>'; return; } const randomIndex = Math.floor(Math.random() * personaItems.length); const randomPersonaTrait = personaItems[randomIndex]; personaTraitDisplay.innerHTML = ''; const traitTextElement = document.createElement('p'); traitTextElement.textContent = randomPersonaTrait; personaTraitDisplay.appendChild(traitTextElement); }, 700); }); } else { console.error("[LOG] 人设娃娃机或显示区未找到。"); }
+    
+    // --- 复制文本到剪贴板的辅助函数 ---
+    async function copyTextToClipboard(text, buttonElement, successMessage = '已复制 ✓') { if (!text || text.trim() === '' || (buttonElement && buttonElement.textContent.includes('已复制'))) { if (text.trim() === '' && buttonElement) { const originalText = buttonElement.dataset.originalText || buttonElement.textContent; buttonElement.textContent = '内容为空!'; setTimeout(() => { buttonElement.textContent = originalText; }, 1500); } return; } const originalButtonText = buttonElement ? (buttonElement.dataset.originalText || buttonElement.innerHTML) : ''; if (buttonElement && !buttonElement.dataset.originalText) buttonElement.dataset.originalText = originalButtonText; try { await navigator.clipboard.writeText(text); if (buttonElement) { buttonElement.innerHTML = successMessage; buttonElement.classList.add('copied-feedback'); setTimeout(() => { buttonElement.innerHTML = originalButtonText; buttonElement.classList.remove('copied-feedback'); delete buttonElement.dataset.originalText; }, 2000); } } catch (err) { console.error('[LOG] 复制文本失败:', err); if (buttonElement) { buttonElement.innerHTML = '复制失败!'; setTimeout(() => { buttonElement.innerHTML = originalButtonText; delete buttonElement.dataset.originalText; }, 2000); } } }
+    
+    // --- 各区域复制按钮事件监听 ---
+    const copyPromptBtn = document.getElementById('copy-prompt-btn'); if (copyPromptBtn && promptGachaDisplay) { copyPromptBtn.addEventListener('click', function() { const promptTextElement = promptGachaDisplay.querySelector('p:not(.placeholder-text):not(.loading-message)'); const textToCopy = promptTextElement ? promptTextElement.textContent : ''; if (textToCopy.trim() !== '') { copyTextToClipboard(textToCopy.trim(), this, '灵感已复制!'); } else { copyTextToClipboard('', this); } }); }
+    const copyStoryBtn = document.getElementById('copy-story-btn'); if (copyStoryBtn && storyDisplayContentElement) { copyStoryBtn.addEventListener('click', function() { const titleElement = storyDisplayContentElement.querySelector('h3'); const contentElement = storyDisplayContentElement.querySelector('p:not(.placeholder-text):not(.loading-message)'); let textToCopy = ""; if (titleElement) textToCopy += titleElement.textContent.trim(); if (contentElement) { if (textToCopy !== "") textToCopy += "\n\n"; textToCopy += contentElement.textContent.trim(); } if (textToCopy.trim() !== '') { copyTextToClipboard(textToCopy, this, '故事已复制!'); } else { copyTextToClipboard('', this); } }); }
+    const copyPersonaBtn = document.getElementById('copy-persona-btn'); if (copyPersonaBtn && personaTraitDisplay) { copyPersonaBtn.addEventListener('click', function() { const personaTextElement = personaTraitDisplay.querySelector('p:not(.placeholder-text):not(.loading-message)'); const textToCopy = personaTextElement ? personaTextElement.textContent : ''; if (textToCopy.trim() !== '') { copyTextToClipboard(textToCopy.trim(), this, '人设已复制!'); } else { copyTextToClipboard('', this); } }); }
+    
+    // --- 特色模块切换功能 ---
+    const paperballTrigger = document.getElementById('paperball-trigger'); const moduleButtonsContainer = document.querySelector('.module-buttons-container'); const moduleContents = document.querySelectorAll('.module-content'); const moduleButtons = document.querySelectorAll('.module-btn');
+    const itemsPerPage = 2; 
+    if (paperballTrigger && moduleButtonsContainer) { paperballTrigger.addEventListener('click', function() { if (moduleButtonsContainer.style.display === 'none' || moduleButtonsContainer.style.display === '') { moduleButtonsContainer.style.display = 'flex'; this.textContent = '📄 收起问卷入口~';} else { moduleButtonsContainer.style.display = 'none'; this.textContent = '📄 点我展开问卷入口~'; moduleContents.forEach(content => content.style.display = 'none'); moduleButtons.forEach(btn => btn.classList.remove('active')); updateModuleButtonStyles(); }}); } else { console.error("[LOG] 纸团或模块按钮容器未找到。"); }
+    function displayModuleItems(moduleName) { if (!allDataLoadedSuccessfully && (!moduleData[moduleName] || !moduleData[moduleName].items || (moduleData[moduleName].items.length > 0 && moduleData[moduleName].items[0].includes("备用"))) ) { const displayElement = document.getElementById(`${moduleName}-item-display`); if(displayElement) displayElement.innerHTML = '<p class="loading-message">模块内容还在努力加载中或加载失败，请稍等或检查Gist链接~</p>'; return; } const moduleConfig = moduleData[moduleName]; if (!moduleConfig || !moduleConfig.items) { console.error(`[LOG] 模块数据 ${moduleName} 或其 items 未找到/加载成功`); const displayElement = document.getElementById(`${moduleName}-item-display`); if(displayElement) displayElement.innerHTML = '<p class="placeholder-text" style="color:red;">模块内容加载失败!</p>'; return; } const displayElement = document.getElementById(`${moduleName}-item-display`); const pageInfoElement = document.getElementById(`${moduleName}-page-info`); const prevButton = document.getElementById(`${moduleName}-prev-btn`); const nextButton = document.getElementById(`${moduleName}-next-btn`); if (!displayElement || !pageInfoElement || !prevButton || !nextButton) { console.error(`[LOG] 模块 ${moduleName} DOM元素不全`); return; } displayElement.innerHTML = ''; const startIndex = (moduleConfig.currentPage - 1) * itemsPerPage; const endIndex = startIndex + itemsPerPage; const paginatedItems = moduleConfig.items.slice(startIndex, endIndex); if (paginatedItems.length === 0 && moduleConfig.items.length > 0 && !(moduleConfig.items.length > 0 && moduleConfig.items[0].includes("备用"))) { displayElement.innerHTML = `<p class="placeholder-text">已经是最后一页啦！</p>`; } else if (moduleConfig.items.length === 0 || (moduleConfig.items.length > 0 && moduleConfig.items[0].includes("备用") && (!allDataLoadedSuccessfully || moduleConfig.items[0].includes("加载中")))) { displayElement.innerHTML = `<p class="placeholder-text">这个模块还没有内容哦~（或加载失败）</p>`;} else { paginatedItems.forEach(itemText => { const p = document.createElement('p'); const textSpan = document.createElement('span'); textSpan.textContent = itemText; p.appendChild(textSpan); const copyForItemButton = document.createElement('button'); copyForItemButton.textContent = '📋'; copyForItemButton.title = '复制此条'; copyForItemButton.classList.add('copy-btn-item'); copyForItemButton.addEventListener('click', function(event) { event.stopPropagation(); copyTextToClipboard(itemText, this, '此条已复制!'); }); p.appendChild(copyForItemButton); displayElement.appendChild(p); }); } const totalPages = Math.ceil(moduleConfig.items.length / itemsPerPage) || 1; pageInfoElement.textContent = `第 ${moduleConfig.currentPage} / ${totalPages} 页`; prevButton.disabled = moduleConfig.currentPage === 1; nextButton.disabled = moduleConfig.currentPage === totalPages || moduleConfig.items.length === 0 || (moduleConfig.items.length > 0 && moduleConfig.items[0].includes("备用")); updatePaginationButtonStyles(moduleName); }
+    ['pureLove', 'privateRealm'].forEach(moduleName => { const copyAllBtn = document.getElementById(`${moduleName}-copy-all-btn`); if (copyAllBtn) { copyAllBtn.addEventListener('click', function() { if (!allDataLoadedSuccessfully && (!moduleData[moduleName] || !moduleData[moduleName].items || (moduleData[moduleName].items.length > 0 && moduleData[moduleName].items[0].includes("备用"))) ) { alert('模块内容还在加载中或加载失败，请稍后再试哦！'); return;} const itemsToCopy = moduleData[moduleName] ? moduleData[moduleName].items : []; if (itemsToCopy && itemsToCopy.length > 0 && !(itemsToCopy.length > 0 && itemsToCopy[0].includes("备用"))) { const allItemsText = itemsToCopy.join('\n\n'); copyTextToClipboard(allItemsText, this, '全部已复制!'); } else { copyTextToClipboard('', this); } }); } else { console.warn(`[LOG] '${moduleName}-copy-all-btn' 未找到。`); } });
+    if (moduleButtons.length > 0 && moduleContents.length > 0) { moduleButtons.forEach(button => { button.addEventListener('click', function() { const targetModule = this.dataset.module; if (!targetModule) { console.error("[LOG] 错误！targetModule 未定义！"); return; } let foundTargetContent = false; moduleContents.forEach(content => { if (content.id === `content-${targetModule}`) { foundTargetContent = true; const isActive = content.style.display === 'block'; content.style.display = isActive ? 'none' : 'block'; if (!isActive) { if (moduleData && moduleData[targetModule]) { moduleData[targetModule].currentPage = 1; try { displayModuleItems(targetModule); } catch (e) { console.error("[LOG] displayModuleItems 调用时发生错误:", e); } } else { console.error("[LOG] 错误！moduleData 或 moduleData['" + targetModule + "'] 未定义！"); const displayElement = document.getElementById(`${targetModule}-item-display`); if(displayElement) displayElement.innerHTML = '<p class="loading-message" style="color:red;">模块数据加载失败!</p>';} } } else { content.style.display = 'none'; } }); if (!foundTargetContent && targetModule) { console.error("[LOG] 严重错误！没有找到匹配的 content div！"); } moduleButtons.forEach(btn => { const moduleDiv = document.getElementById(`content-${btn.dataset.module}`); if (moduleDiv && moduleDiv.style.display === 'block') { btn.classList.add('active'); } else { btn.classList.remove('active'); } }); try { updateModuleButtonStyles(); } catch (e) { console.error("[LOG] updateModuleButtonStyles 调用时发生错误:", e); } }); }); } else { console.warn("[LOG] 未找到模块按钮或模块内容区域。"); }
+    function updatePaginationButtonStyles(moduleName) { const prevButton = document.getElementById(`${moduleName}-prev-btn`); const nextButton = document.getElementById(`${moduleName}-next-btn`); if (!prevButton || !nextButton) return; const currentThemeName = rootElement.style.getPropertyValue('--current-theme-name') || 'blue'; const currentThemeColors = themes[currentThemeName]; if (!currentThemeColors) return;[prevButton, nextButton].forEach(btn => { if (btn.disabled) { btn.style.backgroundColor = currentThemeColors['--pagination-btn-disabled-bg']; btn.style.color = currentThemeColors['--pagination-btn-disabled-text']; } else { btn.style.backgroundColor = currentThemeColors['--pagination-btn-bg']; btn.style.color = currentThemeColors['--pagination-btn-text']; } }); }
+    function updateAllPaginationButtonsStyle() { if (moduleData.pureLove && moduleData.pureLove.items && moduleData.pureLove.items.length > 0 && !(moduleData.pureLove.items.length > 0 && moduleData.pureLove.items[0].includes("备用"))) updatePaginationButtonStyles('pureLove'); if (moduleData.privateRealm && moduleData.privateRealm.items && moduleData.privateRealm.items.length > 0 && !(moduleData.privateRealm.items.length > 0 && moduleData.privateRealm.items[0].includes("备用"))) updatePaginationButtonStyles('privateRealm'); } 
+    function updateModuleButtonStyles() { const currentThemeName = rootElement.style.getPropertyValue('--current-theme-name') || 'blue'; const currentThemeColors = themes[currentThemeName]; if (!currentThemeColors) return; moduleButtons.forEach(btn => { if (btn.classList.contains('active')) { btn.style.backgroundColor = currentThemeColors['--module-button-active-bg']; btn.style.color = currentThemeColors['--module-button-active-text']; } else { btn.style.backgroundColor = currentThemeColors['--module-button-bg']; btn.style.color = currentThemeColors['--module-button-text']; } }); }
+    function setDefaultTheme() { const defaultThemeName = 'blue'; rootElement.style.setProperty('--current-theme-name', defaultThemeName); const defaultTheme = themes[defaultThemeName]; if (defaultTheme) { for (const variable in defaultTheme) { rootElement.style.setProperty(variable, defaultTheme[variable]); } } updateStaminaVisuals(); updateModuleButtonStyles(); updateAllPaginationButtonsStyle(); console.log("[LOG] 默认主题 (Blue) 已应用。"); }
+    
+    setDefaultTheme();
+
+    console.log("[魔法乐园日志 V14.2 最新数据链接版] 核心脚本执行完毕，事件监听器已设置。数据正在从Gist异步加载...");
+});
+</script>
+</body>
+</html>
+
