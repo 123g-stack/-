@@ -17,7 +17,7 @@
             --module-button-active-text: #ffffff; 
             --module-button-bg: #f0f0f0; 
             --module-button-text: var(--primary-text-color); 
-            --pagination-btn-bg: var(--theme-accent-color);
+            --pagination-btn-bg: var(--pagination-btn-bg); /* 已修改：使用变量自身 */
             --pagination-btn-text: #ffffff;
             --pagination-btn-disabled-bg: #cccccc;
             --pagination-btn-disabled-text: #888888;
@@ -112,10 +112,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (!rootElement) console.error("[LOG] CRITICAL: rootElement (html) 未找到!");
 
     // --- Gist Raw URLS (使用甜甜最新提供的链接) ---
+    // 小g修改处1：移除了 MODULE_DATA_GIST_URL 前面的空格
     const PROMPTS_GIST_URL = 'https://gist.githubusercontent.com/123g-stack/44ba2dc940723c1cc3adfe65445321a4/raw/23221be277a73165140aea8e97f8f10e93c5779e/prompts.json';
     const STORIES_GIST_URL = 'https://gist.githubusercontent.com/123g-stack/9143bd88dd6cd7c88d0d5efe3d131645/raw/5aa850b34c7e93fedf03a4978e6bad5646fd048e/stories.json';
     const PERSONA_ITEMS_GIST_URL = 'https://gist.githubusercontent.com/123g-stack/e0667bc86614abdc92d12254997b369d/raw/2be6b93bbc222baa9ea2cc164c81929890c30f8f/personaItems.json';
-    const MODULE_DATA_GIST_URL = ' https://gist.githubusercontent.com/123g-stack/45afe17dbd91ebb37a6daffb1debb30a/raw/d95659d0ccbae794fa692d6f7b0b99fef1034157/moduleData.json';
+    const MODULE_DATA_GIST_URL = 'https://gist.githubusercontent.com/123g-stack/45afe17dbd91ebb37a6daffb1debb30a/raw/d95659d0ccbae794fa692d6f7b0b99fef1034157/moduleData.json';
 
     // --- 初始化数据变量 (用备用数据作为初始值和加载失败的后备) ---
     let prompts = ["加载中，请稍候..."];
@@ -145,11 +146,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         try {
+            // 注意：url.trim() 可以帮助去除 URL 前后的空白字符，增强健壮性
             if (url.trim() === '' || url.includes("【") || url.includes("占位符")) {
                 console.warn(`[LOG] ${dataName}使用的是占位符URL或URL为空 ('${url}')，将使用备用数据。`);
                 throw new Error('Placeholder or empty URL for ' + dataName);
             }
-            const response = await fetch(url, { cache: "no-store" }); 
+            const response = await fetch(url.trim(), { cache: "no-store" }); // 小g修改处2：fetch(url.trim(), ...) 确保去除URL前后的空格
             if (!response.ok) {
                 throw new Error(`网络请求 ${dataName} 失败: ${response.status} ${response.statusText} (URL: ${url})`);
             }
@@ -211,6 +213,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                 else if(privateRealmItemDisplay) privateRealmItemDisplay.innerHTML = '<p class="placeholder-text">神秘花园内容加载失败或为空...</p>';
              }
         }
+
+        // 小g修改处3：在所有数据加载成功后，为分页按钮绑定事件
+        setupPaginationControls('pureLove');
+        setupPaginationControls('privateRealm');
 
     } catch (error) {
         console.error("[LOG] Promise.all 加载数据时发生意外错误:", error);
@@ -274,9 +280,89 @@ document.addEventListener('DOMContentLoaded', async function() {
     const paperballTrigger = document.getElementById('paperball-trigger'); const moduleButtonsContainer = document.querySelector('.module-buttons-container'); const moduleContents = document.querySelectorAll('.module-content'); const moduleButtons = document.querySelectorAll('.module-btn');
     const itemsPerPage = 2; 
     if (paperballTrigger && moduleButtonsContainer) { paperballTrigger.addEventListener('click', function() { if (moduleButtonsContainer.style.display === 'none' || moduleButtonsContainer.style.display === '') { moduleButtonsContainer.style.display = 'flex'; this.textContent = '📄 收起问卷入口~';} else { moduleButtonsContainer.style.display = 'none'; this.textContent = '📄 点我展开问卷入口~'; moduleContents.forEach(content => content.style.display = 'none'); moduleButtons.forEach(btn => btn.classList.remove('active')); updateModuleButtonStyles(); }}); } else { console.error("[LOG] 纸团或模块按钮容器未找到。"); }
-    function displayModuleItems(moduleName) { if (!allDataLoadedSuccessfully && (!moduleData[moduleName] || !moduleData[moduleName].items || (moduleData[moduleName].items.length > 0 && moduleData[moduleName].items[0].includes("备用"))) ) { const displayElement = document.getElementById(`${moduleName}-item-display`); if(displayElement) displayElement.innerHTML = '<p class="loading-message">模块内容还在努力加载中或加载失败，请稍等或检查Gist链接~</p>'; return; } const moduleConfig = moduleData[moduleName]; if (!moduleConfig || !moduleConfig.items) { console.error(`[LOG] 模块数据 ${moduleName} 或其 items 未找到/加载成功`); const displayElement = document.getElementById(`${moduleName}-item-display`); if(displayElement) displayElement.innerHTML = '<p class="placeholder-text" style="color:red;">模块内容加载失败!</p>'; return; } const displayElement = document.getElementById(`${moduleName}-item-display`); const pageInfoElement = document.getElementById(`${moduleName}-page-info`); const prevButton = document.getElementById(`${moduleName}-prev-btn`); const nextButton = document.getElementById(`${moduleName}-next-btn`); if (!displayElement || !pageInfoElement || !prevButton || !nextButton) { console.error(`[LOG] 模块 ${moduleName} DOM元素不全`); return; } displayElement.innerHTML = ''; const startIndex = (moduleConfig.currentPage - 1) * itemsPerPage; const endIndex = startIndex + itemsPerPage; const paginatedItems = moduleConfig.items.slice(startIndex, endIndex); if (paginatedItems.length === 0 && moduleConfig.items.length > 0 && !(moduleConfig.items.length > 0 && moduleConfig.items[0].includes("备用"))) { displayElement.innerHTML = `<p class="placeholder-text">已经是最后一页啦！</p>`; } else if (moduleConfig.items.length === 0 || (moduleConfig.items.length > 0 && moduleConfig.items[0].includes("备用") && (!allDataLoadedSuccessfully || moduleConfig.items[0].includes("加载中")))) { displayElement.innerHTML = `<p class="placeholder-text">这个模块还没有内容哦~（或加载失败）</p>`;} else { paginatedItems.forEach(itemText => { const p = document.createElement('p'); const textSpan = document.createElement('span'); textSpan.textContent = itemText; p.appendChild(textSpan); const copyForItemButton = document.createElement('button'); copyForItemButton.textContent = '📋'; copyForItemButton.title = '复制此条'; copyForItemButton.classList.add('copy-btn-item'); copyForItemButton.addEventListener('click', function(event) { event.stopPropagation(); copyTextToClipboard(itemText, this, '此条已复制!'); }); p.appendChild(copyForItemButton); displayElement.appendChild(p); }); } const totalPages = Math.ceil(moduleConfig.items.length / itemsPerPage) || 1; pageInfoElement.textContent = `第 ${moduleConfig.currentPage} / ${totalPages} 页`; prevButton.disabled = moduleConfig.currentPage === 1; nextButton.disabled = moduleConfig.currentPage === totalPages || moduleConfig.items.length === 0 || (moduleConfig.items.length > 0 && moduleConfig.items[0].includes("备用")); updatePaginationButtonStyles(moduleName); }
+    function displayModuleItems(moduleName) { if (!allDataLoadedSuccessfully && (!moduleData[moduleName] || !moduleData[moduleName].items || (moduleData[moduleName].items.length > 0 && moduleData[moduleName].items[0].includes("备用"))) ) { const displayElement = document.getElementById(`${moduleName}-item-display`); if(displayElement) displayElement.innerHTML = '<p class="loading-message">模块内容还在努力加载中或加载失败，请稍等或检查Gist链接~</p>'; return; } const moduleConfig = moduleData[moduleName]; if (!moduleConfig || !moduleConfig.items) { console.error(`[LOG] 模块数据 ${moduleName} 或其 items 未找到/加载成功`); const displayElement = document.getElementById(`${moduleName}-item-display`); if(displayElement) displayElement.innerHTML = '<p class="placeholder-text" style="color:red;">模块内容加载失败!</p>'; return; } const displayElement = document.getElementById(`${moduleName}-item-display`);
+        const pageInfoElement = document.getElementById(`${moduleName}-page-info`);
+        const prevButton = document.getElementById(`${moduleName}-prev-btn`);
+        const nextButton = document.getElementById(`${moduleName}-next-btn`);
+        if (!displayElement || !pageInfoElement || !prevButton || !nextButton) {
+            console.error(`[LOG] 模块 ${moduleName} DOM元素不全`); return;
+        }
+
+        displayElement.innerHTML = '';
+        const startIndex = (moduleConfig.currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedItems = moduleConfig.items.slice(startIndex, endIndex);
+
+        if (paginatedItems.length === 0 && moduleConfig.items.length > 0 && !(moduleConfig.items.length > 0 && moduleConfig.items[0].includes("备用"))) {
+            displayElement.innerHTML = `<p class="placeholder-text">已经是最后一页啦！</p>`;
+        } else if (moduleConfig.items.length === 0 || (moduleConfig.items.length > 0 && moduleConfig.items[0].includes("备用") && (!allDataLoadedSuccessfully || moduleConfig.items[0].includes("加载中")))) {
+            displayElement.innerHTML = `<p class="placeholder-text">这个模块还没有内容哦~（或加载失败）</p>`;
+        } else {
+            paginatedItems.forEach(itemText => {
+                const p = document.createElement('p');
+                const textSpan = document.createElement('span');
+                textSpan.textContent = itemText;
+                p.appendChild(textSpan);
+                const copyForItemButton = document.createElement('button');
+                copyForItemButton.textContent = '📋';
+                copyForItemButton.title = '复制此条';
+                copyForItemButton.classList.add('copy-btn-item');
+                copyForItemButton.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    copyTextToClipboard(itemText, this, '此条已复制!');
+                });
+                p.appendChild(copyForItemButton);
+                displayElement.appendChild(p);
+            });
+        }
+        
+        const totalPages = Math.ceil(moduleConfig.items.length / itemsPerPage) || 1;
+        pageInfoElement.textContent = `第 ${moduleConfig.currentPage} / ${totalPages} 页`;
+        prevButton.disabled = moduleConfig.currentPage === 1;
+        nextButton.disabled = moduleConfig.currentPage >= totalPages || moduleConfig.items.length === 0 || (moduleConfig.items.length > 0 && moduleConfig.items[0].includes("备用")); // 小g修改处4：nextButton.disabled 的判断条件，currentPage >= totalPages 更严谨
+        updatePaginationButtonStyles(moduleName);
+    } // displayModuleItems 函数的结束括号
+
     ['pureLove', 'privateRealm'].forEach(moduleName => { const copyAllBtn = document.getElementById(`${moduleName}-copy-all-btn`); if (copyAllBtn) { copyAllBtn.addEventListener('click', function() { if (!allDataLoadedSuccessfully && (!moduleData[moduleName] || !moduleData[moduleName].items || (moduleData[moduleName].items.length > 0 && moduleData[moduleName].items[0].includes("备用"))) ) { alert('模块内容还在加载中或加载失败，请稍后再试哦！'); return;} const itemsToCopy = moduleData[moduleName] ? moduleData[moduleName].items : []; if (itemsToCopy && itemsToCopy.length > 0 && !(itemsToCopy.length > 0 && itemsToCopy[0].includes("备用"))) { const allItemsText = itemsToCopy.join('\n\n'); copyTextToClipboard(allItemsText, this, '全部已复制!'); } else { copyTextToClipboard('', this); } }); } else { console.warn(`[LOG] '${moduleName}-copy-all-btn' 未找到。`); } });
     if (moduleButtons.length > 0 && moduleContents.length > 0) { moduleButtons.forEach(button => { button.addEventListener('click', function() { const targetModule = this.dataset.module; if (!targetModule) { console.error("[LOG] 错误！targetModule 未定义！"); return; } let foundTargetContent = false; moduleContents.forEach(content => { if (content.id === `content-${targetModule}`) { foundTargetContent = true; const isActive = content.style.display === 'block'; content.style.display = isActive ? 'none' : 'block'; if (!isActive) { if (moduleData && moduleData[targetModule]) { moduleData[targetModule].currentPage = 1; try { displayModuleItems(targetModule); } catch (e) { console.error("[LOG] displayModuleItems 调用时发生错误:", e); } } else { console.error("[LOG] 错误！moduleData 或 moduleData['" + targetModule + "'] 未定义！"); const displayElement = document.getElementById(`${targetModule}-item-display`); if(displayElement) displayElement.innerHTML = '<p class="loading-message" style="color:red;">模块数据加载失败!</p>';} } } else { content.style.display = 'none'; } }); if (!foundTargetContent && targetModule) { console.error("[LOG] 严重错误！没有找到匹配的 content div！"); } moduleButtons.forEach(btn => { const moduleDiv = document.getElementById(`content-${btn.dataset.module}`); if (moduleDiv && moduleDiv.style.display === 'block') { btn.classList.add('active'); } else { btn.classList.remove('active'); } }); try { updateModuleButtonStyles(); } catch (e) { console.error("[LOG] updateModuleButtonStyles 调用时发生错误:", e); } }); }); } else { console.warn("[LOG] 未找到模块按钮或模块内容区域。"); }
+
+    // 小g修改处5：新增 setupPaginationControls 函数，用于绑定分页按钮的点击事件
+    function setupPaginationControls(moduleName) {
+        const prevButton = document.getElementById(`${moduleName}-prev-btn`);
+        const nextButton = document.getElementById(`${moduleName}-next-btn`);
+        const moduleConfig = moduleData[moduleName];
+
+        if (!prevButton || !nextButton || !moduleConfig) {
+            console.warn(`[LOG] 未能为 ${moduleName} 设置分页控件事件，缺少元素或数据。`);
+            return;
+        }
+
+        // 移除旧的事件监听器，避免重复绑定（如果之前有的话）
+        prevButton.removeEventListener('click', handlePaginationClick);
+        nextButton.removeEventListener('click', handlePaginationClick);
+
+        // 添加新的事件监听器
+        prevButton.addEventListener('click', handlePaginationClick);
+        nextButton.addEventListener('click', handlePaginationClick);
+
+        function handlePaginationClick(event) {
+            const button = event.target;
+            if (button.classList.contains('prev')) {
+                if (moduleConfig.currentPage > 1) {
+                    moduleConfig.currentPage--;
+                    displayModuleItems(moduleName);
+                }
+            } else if (button.classList.contains('next')) {
+                const totalPages = Math.ceil(moduleConfig.items.length / itemsPerPage) || 1;
+                if (moduleConfig.currentPage < totalPages) { // 使用 < totalPages 而不是 <= totalPages
+                    moduleConfig.currentPage++;
+                    displayModuleItems(moduleName);
+                }
+            }
+        }
+    }
+
+
     function updatePaginationButtonStyles(moduleName) { const prevButton = document.getElementById(`${moduleName}-prev-btn`); const nextButton = document.getElementById(`${moduleName}-next-btn`); if (!prevButton || !nextButton) return; const currentThemeName = rootElement.style.getPropertyValue('--current-theme-name') || 'blue'; const currentThemeColors = themes[currentThemeName]; if (!currentThemeColors) return;[prevButton, nextButton].forEach(btn => { if (btn.disabled) { btn.style.backgroundColor = currentThemeColors['--pagination-btn-disabled-bg']; btn.style.color = currentThemeColors['--pagination-btn-disabled-text']; } else { btn.style.backgroundColor = currentThemeColors['--pagination-btn-bg']; btn.style.color = currentThemeColors['--pagination-btn-text']; } }); }
     function updateAllPaginationButtonsStyle() { if (moduleData.pureLove && moduleData.pureLove.items && moduleData.pureLove.items.length > 0 && !(moduleData.pureLove.items.length > 0 && moduleData.pureLove.items[0].includes("备用"))) updatePaginationButtonStyles('pureLove'); if (moduleData.privateRealm && moduleData.privateRealm.items && moduleData.privateRealm.items.length > 0 && !(moduleData.privateRealm.items.length > 0 && moduleData.privateRealm.items[0].includes("备用"))) updatePaginationButtonStyles('privateRealm'); } 
     function updateModuleButtonStyles() { const currentThemeName = rootElement.style.getPropertyValue('--current-theme-name') || 'blue'; const currentThemeColors = themes[currentThemeName]; if (!currentThemeColors) return; moduleButtons.forEach(btn => { if (btn.classList.contains('active')) { btn.style.backgroundColor = currentThemeColors['--module-button-active-bg']; btn.style.color = currentThemeColors['--module-button-active-text']; } else { btn.style.backgroundColor = currentThemeColors['--module-button-bg']; btn.style.color = currentThemeColors['--module-button-text']; } }); }
@@ -289,4 +375,3 @@ document.addEventListener('DOMContentLoaded', async function() {
 </script>
 </body>
 </html>
-
