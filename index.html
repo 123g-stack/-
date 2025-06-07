@@ -17,7 +17,7 @@
             --module-button-active-text: #ffffff; 
             --module-button-bg: #f0f0f0; 
             --module-button-text: var(--primary-text-color); 
-            --pagination-btn-bg: var(--pagination-btn-bg); /* 已修改：使用变量自身 */
+            --pagination-btn-bg:#00bcd4;
             --pagination-btn-text: #ffffff;
             --pagination-btn-disabled-bg: #cccccc;
             --pagination-btn-disabled-text: #888888;
@@ -86,14 +86,628 @@
         .copy-btn-module-all:hover { filter: brightness(110%); }
         .copy-btn-section { display: block; width: fit-content; margin: 15px auto 5px auto; padding: 8px 15px; font-size: 0.95em; font-weight: bold; background-color: var(--draw-method-bg-color); color: var(--draw-method-text-color); border: 2px dashed var(--draw-method-border-color); border-radius: 8px; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
         .copy-btn-section:hover { background-color: var(--draw-method-hover-bg-color); filter: brightness(105%); }
-        .copied-feedback { background-color: #28a745 !important; color: white !important; border-color: #28a745 !important; }
+        .copied-feedback { background-color: #28a745 !important; color: white !important; border-color: #28a745 !important; }/* 虚拟房间和宠物样式 */
+#virtual-room-area { position: relative; }
+#room-display { 
+    width: 100%; 
+    height: 300px; 
+    border: 3px solid var(--draw-method-border-color); 
+    border-radius: 15px; 
+    position: relative; 
+    overflow: hidden; 
+    background: linear-gradient(135deg, var(--story-content-bg-color) 0%, var(--draw-method-bg-color) 100%);
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+#room-background {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: all 0.5s ease;
+}
+#pet-container {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+#virtual-pet {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+#virtual-pet:hover {
+    transform: scale(1.1);
+}
+#pet-emoji {
+    font-size: 4em;
+    display: block;
+    margin-bottom: 10px;
+    animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+@keyframes float-up {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+    50% { opacity: 1; transform: translate(-50%, -80px) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -120px) scale(0.5); }
+}
+#pet-status {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px 12px;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    min-width: 120px;
+}
+.status-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    gap: 8px;
+}
+.status-bar:last-child { margin-bottom: 0; }
+.status-bar-bg {
+    flex: 1;
+    height: 12px;
+    background: #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.status-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.5s ease, background-color 0.5s ease;
+}
+#pet-happiness { background: linear-gradient(90deg, #ff6b6b, #ff8e8e); }
+#pet-hunger { background: linear-gradient(90deg, #4ecdc4, #6ee8dd); }
+.status-bar span:last-child {
+    font-weight: bold;
+    min-width: 30px;
+    text-align: center;
+    font-size: 0.9em;
+}
+#room-items {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.room-item {
+    position: absolute;
+    font-size: 2em;
+    cursor: pointer;
+    pointer-events: all;
+    transition: transform 0.2s ease;
+    user-select: none;
+}
+.room-item:hover {
+    transform: scale(1.2);
+}
+#food-bowl { bottom: 20px; left: 20px; }
+#toy-ball { bottom: 20px; right: 20px; }
+#bed { top: 20px; right: 20px; }
+#pet-controls, #room-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+.pet-action-btn, .room-theme-btn {
+    padding: 10px 20px;
+    border: 2px solid var(--draw-method-border-color);
+    border-radius: 20px;
+    background: var(--draw-method-bg-color);
+    color: var(--draw-method-text-color);
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+.pet-action-btn:hover, .room-theme-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background: var(--draw-method-hover-bg-color);
+}
+.pet-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+.room-theme-btn.active {
+    background: var(--theme-accent-color);
+    color: white;
+    box-shadow: 0 0 10px var(--theme-accent-color);
+}
+
+/* 房间主题样式 */
+.room-theme-cozy {
+    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+}
+.room-theme-garden {
+    background: linear-gradient(135deg, #a8e6cf 0%, #88d8a3 100%);
+}
+.room-theme-space {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.room-theme-ocean {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+}
+
+/* 宠物动画效果 */
+.pet-happy { animation: bounce 0.6s ease-in-out; }
+@keyframes bounce {
+    0%, 100% { transform: scale(1) translateX(-50%); }
+    50% { transform: scale(1.2) translateX(-50%); }
+}
+.pet-eating { animation: shake-head 0.8s ease-in-out; }
+@keyframes shake-head {
+    0%, 100% { transform: translateX(-50%) rotate(0deg); }
+    25% { transform: translateX(-50%) rotate(-5deg); }
+    75% { transform: translateX(-50%) rotate(5deg); }
+}
+.pet-sleeping { animation: sleep-sway 2s ease-in-out infinite; }
+@keyframes sleep-sway {
+    0%, 100% { transform: translateX(-50%) rotate(-2deg); }
+    50% { transform: translateX(-50%) rotate(2deg); }
+}
+/* 升级的宠物和房间样式 - 添加到你的CSS中 */
+
+/* 语音气泡 */
+.speech-bubble {
+    position: absolute;
+    bottom: 95%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--theme-accent-color);
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: var(--primary-text-color);
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    animation: bubble-pop 0.3s ease-out;
+    z-index: 1000;
+}
+
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: var(--theme-accent-color);
+}
+
+.speech-bubble.hidden {
+    display: none;
+}
+
+@keyframes bubble-pop {
+    0% { opacity: 0; transform: translateX(-50%) scale(0.8); }
+    100% { opacity: 1; transform: translateX(-50%) scale(1); }
+}
+
+/* 天气效果 */
+#weather-effects {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.weather-particle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.weather-particle.active {
+    opacity: 1;
+}
+
+/* 雨滴效果 */
+#rain.active::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: 0;
+    width: 100%;
+    height: calc(100% + 100px);
+    background-image: 
+        radial-gradient(2px 10px, #4fc3f7 50%, transparent 50%),
+        radial-gradient(2px 10px, #29b6f6 50%, transparent 50%);
+    background-size: 25px 50px, 30px 60px;
+    animation: rain-fall 1s linear infinite;
+}
+
+@keyframes rain-fall {
+    0% { background-position: 0 -100px, 5px -100px; }
+    100% { background-position: 0 calc(100% + 100px), 5px calc(100% + 100px); }
+}
+
+/* 雪花效果 */
+#snow.active::before,
+#snow.active::after {
+    content: '❄';
+    position: absolute;
+    top: -50px;
+    font-size: 20px;
+    color: #e3f2fd;
+    animation: snow-fall 3s linear infinite;
+}
+
+#snow.active::before {
+    left: 10%;
+    animation-delay: 0s;
+}
+
+#snow.active::after {
+    left: 80%;
+    animation-delay: 1.5s;
+    font-size: 16px;
+}
+
+@keyframes snow-fall {
+    0% { transform: translateY(-50px) rotate(0deg); }
+    100% { transform: translateY(350px) rotate(360deg); }
+}
+
+/* 星星效果 */
+#stars.active {
+    background-image: 
+        radial-gradient(2px 2px, #fff59d 50%, transparent 50%),
+        radial-gradient(1px 1px, #ffeb3b 50%, transparent 50%),
+        radial-gradient(1px 1px, #ffc107 50%, transparent 50%);
+    background-size: 50px 50px, 80px 80px, 100px 100px;
+    animation: twinkle 2s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.3; }
+    100% { opacity: 0.8; }
+}
+
+/* 升级的房间物品 */
+#fish-tank {
+    top: 40%;
+    left: 15%;
+    animation: fish-swim 3s ease-in-out infinite;
+}
+
+@keyframes fish-swim {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.1) rotate(5deg); }
+}
+
+#plant {
+    bottom: 60px;
+    left: 70%;
+    animation: plant-grow 4s ease-in-out infinite;
+}
+
+@keyframes plant-grow {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+#music-box {
+    top: 30px;
+    left: 75%;
+    animation: music-bounce 2s ease-in-out infinite;
+}
+
+@keyframes music-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* 新房间主题 */
+.room-theme-candy {
+    background: linear-gradient(135deg, #f8bbd9 0%, #e91e63 50%, #ad1457 100%);
+}
+
+.room-theme-forest {
+    background: linear-gradient(135deg, #c8e6c9 0%, #4caf50 50%, #2e7d32 100%);
+}
+
+/* 特效容器 */
+#effects-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+}
+
+/* 浮动特效 */
+.floating-effect {
+    position: absolute;
+    font-size: 1.5em;
+    pointer-events: none;
+    animation: float-away 2s ease-out forwards;
+    z-index: 1000;
+}
+
+@keyframes float-away {
+    0% {
+        opacity: 1;
+        transform: scale(0.5) translateY(0);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1) translateY(-30px);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.5) translateY(-60px);
+    }
+}
+
+/* 天气控制按钮 */
+#weather-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.weather-btn {
+    padding: 8px 16px;
+    border: 2px solid var(--draw-method-border-color);
+    border-radius: 15px;
+    background: var(--draw-method-bg-color);
+    color: var(--draw-method-text-color);
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
+
+.weather-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background: var(--draw-method-hover-bg-color);
+}
+
+.weather-btn.active {
+    background: var(--theme-accent-color);
+    color: white;
+    box-shadow: 0 0 10px var(--theme-accent-color);
+}
+
+/* 宠物信息面板 */
+#pet-info-panel {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid var(--feature-border-color);
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+    backdrop-filter: blur(5px);
+}
+
+#pet-info-panel h3 {
+    margin-top: 0;
+    color: var(--theme-accent-color);
+    text-align: center;
+}
+
+.pet-trait {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding: 5px 0;
+    border-bottom: 1px dotted var(--feature-border-color);
+}
+
+.trait-label {
+    font-weight: bold;
+    color: var(--primary-text-color);
+}
+
+/* 升级的宠物动画 */
+.pet-excited {
+    animation: excited-bounce 0.6s ease-in-out 3;
+}
+
+@keyframes excited-bounce {
+    0%, 100% { transform: translateX(-50%) scale(1) rotate(0deg); }
+    25% { transform: translateX(-50%) scale(1.2) rotate(-5deg); }
+    75% { transform: translateX(-50%) scale(1.2) rotate(5deg); }
+}
+
+.pet-sleepy {
+    animation: sleepy-sway 3s ease-in-out infinite;
+    opacity: 0.8;
+}
+
+@keyframes sleepy-sway {
+    0%, 100% { transform: translateX(-50%) rotate(-3deg); }
+    50% { transform: translateX(-50%) rotate(3deg); }
+}
+
+.pet-dancing {
+    animation: dance 1s ease-in-out 3;
+}
+
+@keyframes dance {
+    0%, 100% { transform: translateX(-50%) rotate(0deg) scale(1); }
+    25% { transform: translateX(-50%) rotate(-10deg) scale(1.1); }
+    50% { transform: translateX(-50%) rotate(0deg) scale(1.2); }
+    75% { transform: translateX(-50%) rotate(10deg) scale(1.1); }
+}
+
+/* 心形特效 */
+.heart-effect {
+    color: #e91e63;
+    animation: heart-float 2s ease-out forwards;
+}
+
+@keyframes heart-float {
+    0% {
+        opacity: 1;
+        transform: scale(0.5) translateY(0) rotate(0deg);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2) translateY(-40px) rotate(180deg);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.8) translateY(-80px) rotate(360deg);
+    }
+}
+
+/* 能量值样式 */
+#pet-energy {
+    background: linear-gradient(90deg, #9c27b0, #e1bee7);
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+    .speech-bubble {
+        font-size: 0.8em;
+        padding: 6px 12px;
+    }
+    
+    #pet-info-panel {
+        margin: 10px 0;
+        padding: 10px;
+    }
+    
+    .weather-btn, .pet-action-btn {
+        font-size: 0.8em;
+        padding: 6px 12px;
+    }
+}
     </style>
 </head>
 <body>
-
     <h1>欢迎来到甜甜的魔法故事乐园！</h1>
-
-    <div class="feature-section" id="theme-selector-area"><h2>🎨 主题颜色选择</h2><div class="theme-buttons"><button class="theme-btn pink" data-theme="pink">甜甜粉</button><button class="theme-btn blue" data-theme="blue">天空蓝</button><button class="theme-btn green" data-theme="green">森林绿</button><button class="theme-btn orange" data-theme="orange">活力橙</button><button class="theme-btn purple" data-theme="purple">星空紫</button><button class="theme-btn yellow" data-theme="yellow">柠檬黄</button><button class="theme-btn dark" data-theme="dark">暗夜黑</button></div><p class="placeholder-text">（点击按钮切换整个页面的颜色主题）</p></div>
+<div class="feature-section" id="virtual-room-area">
+    <h2>🏠 我的魔法小屋</h2>
+    <div id="room-display">
+        <div id="room-background">
+            <!-- 天气系统 -->
+            <div id="weather-effects">
+                <div class="weather-particle" id="rain"></div>
+                <div class="weather-particle" id="snow"></div>
+                <div class="weather-particle" id="stars"></div>
+            </div>
+            
+            <!-- 宠物容器 -->
+            <div id="pet-container">
+                <div id="virtual-pet">
+                    <span id="pet-emoji">🐱</span>
+                    <div id="pet-speech-bubble" class="speech-bubble hidden">
+                        <span id="pet-speech-text">喵~</span>
+                    </div>
+                    <div id="pet-status">
+                        <div class="status-bar">
+                            <span>❤️</span>
+                            <div class="status-bar-bg">
+                                <div id="pet-happiness" class="status-bar-fill"></div>
+                            </div>
+                            <span id="happiness-text">100</span>
+                        </div>
+                        <div class="status-bar">
+                            <span>🍖</span>
+                            <div class="status-bar-bg">
+                                <div id="pet-hunger" class="status-bar-fill"></div>
+                            </div>
+                            <span id="hunger-text">100</span>
+                        </div>
+                        <div class="status-bar">
+                            <span>💤</span>
+                            <div class="status-bar-bg">
+                                <div id="pet-energy" class="status-bar-fill"></div>
+                            </div>
+                            <span id="energy-text">100</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 互动物品 -->
+            <div id="room-items">
+                <div class="room-item" id="food-bowl" title="点击喂食">🥣</div>
+                <div class="room-item" id="toy-ball" title="点击玩耍">⚽</div>
+                <div class="room-item" id="bed" title="点击休息">🛏️</div>
+                <div class="room-item" id="fish-tank" title="观赏鱼缸">🐠</div>
+                <div class="room-item" id="plant" title="浇花">🌱</div>
+                <div class="room-item" id="music-box" title="播放音乐">🎵</div>
+            </div>
+            
+            <!-- 特效容器 -->
+            <div id="effects-container"></div>
+        </div>
+    </div>
+    
+    <!-- 控制面板 -->
+    <div id="pet-controls">
+        <button class="pet-action-btn" id="feed-pet">🍖 喂食</button>
+        <button class="pet-action-btn" id="play-pet">🎾 玩耍</button>
+        <button class="pet-action-btn" id="pet-sleep">💤 休息</button>
+        <button class="pet-action-btn" id="change-pet">🔄 换宠物</button>
+        <button class="pet-action-btn" id="give-gift">🎁 礼物</button>
+        <button class="pet-action-btn" id="pet-bath">🛁 洗澡</button>
+    </div>
+    
+    <!-- 天气控制 -->
+    <div id="weather-controls">
+        <h3>🌤️ 天气魔法</h3>
+        <button class="weather-btn" data-weather="sunny">☀️ 晴天</button>
+        <button class="weather-btn" data-weather="rainy">🌧️ 雨天</button>
+        <button class="weather-btn" data-weather="snowy">❄️ 雪天</button>
+        <button class="weather-btn" data-weather="starry">⭐ 星空</button>
+    </div>
+    
+    <!-- 房间主题 -->
+    <div id="room-controls">
+        <h3>🎨 房间装饰</h3>
+        <button class="room-theme-btn" data-room="cozy">🏡 温馨小屋</button>
+        <button class="room-theme-btn" data-room="garden">🌸 花园小屋</button>
+        <button class="room-theme-btn" data-room="space">🌌 星空小屋</button>
+        <button class="room-theme-btn" data-room="ocean">🌊 海洋小屋</button>
+        <button class="room-theme-btn" data-room="candy">🍭 糖果小屋</button>
+        <button class="room-theme-btn" data-room="forest">🌲 森林小屋</button>
+    </div>
+    
+    <!-- 宠物信息面板 -->
+    <div id="pet-info-panel">
+        <h3>📊 <span id="pet-name">小咪</span> 的状态</h3>
+        <div class="pet-trait">
+            <span class="trait-label">心情：</span>
+            <span id="pet-mood">😊 开心</span>
+        </div>
+        <div class="pet-trait">
+            <span class="trait-label">等级：</span>
+            <span id="pet-level">Lv.1</span>
+        </div>
+        <div class="pet-trait">
+            <span class="trait-label">经验：</span>
+            <span id="pet-exp">0/100</span>
+        </div>
+    </div>
+    
+    <p class="placeholder-text">（小宠物现在更加生动可爱了！试试与它和房间的各种互动吧～）</p>
+</div>
+     <div class="feature-section" id="theme-selector-area"><h2>🎨 主题颜色选择</h2><div class="theme-buttons"><button class="theme-btn pink" data-theme="pink">甜甜粉</button><button class="theme-btn blue" data-theme="blue">天空蓝</button><button class="theme-btn green" data-theme="green">森林绿</button><button class="theme-btn orange" data-theme="orange">活力橙</button><button class="theme-btn purple" data-theme="purple">星空紫</button><button class="theme-btn yellow" data-theme="yellow">柠檬黄</button><button class="theme-btn dark" data-theme="dark">暗夜黑</button></div><p class="placeholder-text">（点击按钮切换整个页面的颜色主题）</p></div>
     <div class="feature-section" id="story-draw-area"><h2>✨ 抽取故事的方式</h2><div class="story-draw-methods"><div class="draw-method" id="draw-darts">🎯 飞镖</div><div class="draw-method" id="draw-slot-machine">🎰 老虎机</div><div class="draw-method" id="draw-coin-toss">🪙 投币</div><div class="draw-method" id="draw-cat-paw">🐾 喵爪</div><div class="draw-method" id="draw-balloon">🎈 气球</div><div class="draw-method" id="draw-claw-machine">🧸 娃娃机</div></div><p class="placeholder-text">（点击按钮抽取故事）</p></div>
     <div class="feature-section" id="persona-area"><h2>🎭 我的人设娃娃机</h2><div id="persona-claw-machine-trigger" class="persona-claw-machine"><span class="claw-emoji">🧸</span><p>点击抽取今日人设！</p></div><div id="persona-trait-display" class="persona-trait-display-area"><p class="placeholder-text">今天会是什么样的我呢？</p></div><button id="copy-persona-btn" class="copy-btn-section" title="复制人设">📋 复制今日人设</button><p class="placeholder-text" style="text-align:center; margin-top:10px;">（人设“奖品”会在数据加载后可用）</p></div>
     <div class="feature-section" id="stamina-area"><h2>💪 体力值</h2> <p>当前体力：<span id="stamina-value-display">100</span> / 100</p> <div id="stamina-bar-container"><div id="stamina-bar">100%</div></div> <p class="placeholder-text">（每次抽取故事会消耗体力，体力会缓慢自动恢复哦！）</p></div>
@@ -104,10 +718,946 @@
 <script>
     // JavaScript 魔法开始！
     console.log("[魔法乐园日志 V14.2 Gist链接再次更新版] 脚本开始运行！");
-
 document.addEventListener('DOMContentLoaded', async function() {
     console.log("[魔法乐园日志 V14.2 Gist链接再次更新版] DOM完全加载，准备加载外部数据。");
+    
+// 升级的宠物数据
+const pets = [
+    { emoji: '🐱', name: '小咪', personality: '活泼', favoriteFood: '🐟' },
+    { emoji: '🐶', name: '汪汪', personality: '忠诚', favoriteFood: '🦴' },
+    { emoji: '🐰', name: '兔兔', personality: '温柔', favoriteFood: '🥕' },
+    { emoji: '🐹', name: '仓鼠', personality: '好奇', favoriteFood: '🌰' },
+    { emoji: '🐨', name: '考拉', personality: '悠闲', favoriteFood: '🍃' },
+    { emoji: '🐼', name: '熊猫', personality: '憨厚', favoriteFood: '🎋' },
+    { emoji: '🦊', name: '小狐', personality: '聪明', favoriteFood: '🍇' },
+    { emoji: '🐺', name: '小狼', personality: '独立', favoriteFood: '🥩' }
+];
 
+// 宠物台词库
+const petDialogues = {
+    happy: ['好开心呀！', '今天心情超棒！', '和你在一起真好～', '感觉充满了活力！'],
+    hungry: ['肚子咕咕叫了...', '好想吃东西呀', '有好吃的吗？', '主人，我饿了～'],
+    sleepy: ['好困呀...', 'zzz...', '想睡觉了', '眼皮好重'],
+    excited: ['太棒了！', '哇！好厉害！', '好有趣呀！', '再来一次！'],
+    love: ['最喜欢你了！', '❤️', '抱抱～', '永远陪着你'],
+    playful: ['一起玩吧！', '好无聊呀～', '来玩游戏！', '陪我玩嘛！'],
+    greeting: ['你好呀！', '想我了吗？', '今天过得怎么样？', '主人回来了！']
+};
+
+// 升级的宠物状态
+let petState = {
+    currentPetIndex: 0,
+    happiness: 100,
+    hunger: 100,
+    energy: 100,
+    level: 1,
+    exp: 0,
+    lastInteraction: Date.now(),
+    room: 'cozy',
+    weather: 'sunny',
+    mood: 'happy',
+    coins: 100,
+    ownedItems: [],
+    equippedItems: { hat: null, clothes: null, accessory: null }
+};
+
+// 从本地存储加载宠物状态
+function loadPetState() {
+    try {
+        const saved = localStorage.getItem('magicGarden_petState');
+        if (saved) {
+            const parsedState = JSON.parse(saved);
+            petState = { ...petState, ...parsedState };
+            
+            // 计算离线时间造成的状态变化
+            const timeDiff = Date.now() - petState.lastInteraction;
+            const hoursOffline = timeDiff / (1000 * 60 * 60);
+            
+            if (hoursOffline > 0.5) {
+                petState.hunger = Math.max(0, petState.hunger - Math.floor(hoursOffline * 8));
+                petState.happiness = Math.max(0, petState.happiness - Math.floor(hoursOffline * 4));
+                petState.energy = Math.max(0, petState.energy - Math.floor(hoursOffline * 5));
+            }
+        }
+    } catch (e) {
+        console.warn('宠物状态加载失败，使用默认状态');
+    }
+}
+
+// 保存宠物状态
+function savePetState() {
+    try {
+        petState.lastInteraction = Date.now();
+        localStorage.setItem('magicGarden_petState', JSON.stringify(petState));
+    } catch (e) {
+        console.warn('宠物状态保存失败');
+    }
+}
+
+// 宠物心情系统
+function updatePetMood() {
+    const { happiness, hunger, energy } = petState;
+    const average = (happiness + hunger + energy) / 3;
+    
+    if (average >= 80) {
+        petState.mood = 'happy';
+    } else if (average >= 60) {
+        petState.mood = 'content';
+    } else if (average >= 40) {
+        petState.mood = 'tired';
+    } else if (hunger < 30) {
+        petState.mood = 'hungry';
+    } else if (energy < 30) {
+        petState.mood = 'sleepy';
+    } else {
+        petState.mood = 'sad';
+    }
+    
+    updatePetMoodDisplay();
+}
+
+// 更新心情显示
+function updatePetMoodDisplay() {
+    const moodElement = document.getElementById('pet-mood');
+    if (!moodElement) return;
+    
+    const moodEmojis = {
+        happy: '😊 开心',
+        content: '😌 满足',
+        tired: '😴 疲惫',
+        hungry: '😋 饥饿',
+        sleepy: '💤 困倦',
+        sad: '😢 伤心',
+        excited: '🤩 兴奋'
+    };
+    
+    moodElement.textContent = moodEmojis[petState.mood] || '😊 开心';
+}
+
+// 显示宠物语音气泡
+function showPetSpeech(message, duration = 3000) {
+    const speechBubble = document.getElementById('pet-speech-bubble');
+    const speechText = document.getElementById('pet-speech-text');
+    
+    if (!speechBubble || !speechText) return;
+    
+    speechText.textContent = message;
+    speechBubble.classList.remove('hidden');
+    
+    setTimeout(() => {
+        speechBubble.classList.add('hidden');
+    }, duration);
+}
+
+// 宠物说话
+function petSpeak(category = null) {
+    let messages;
+    
+    if (category && petDialogues[category]) {
+        messages = petDialogues[category];
+    } else {
+        // 根据当前心情选择台词
+        switch (petState.mood) {
+            case 'hungry':
+                messages = petDialogues.hungry;
+                break;
+            case 'sleepy':
+                messages = petDialogues.sleepy;
+                break;
+            case 'happy':
+                messages = petDialogues.happy;
+                break;
+            default:
+                messages = petDialogues.happy;
+        }
+    }
+    
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    showPetSpeech(randomMessage);
+}
+
+// 创建浮动特效
+function createFloatingEffect(x, y, emoji, className = '') {
+    const effect = document.createElement('div');
+    effect.className = `floating-effect ${className}`;
+    effect.textContent = emoji;
+    effect.style.left = x + 'px';
+    effect.style.top = y + 'px';
+    
+    const effectsContainer = document.getElementById('effects-container');
+    if (effectsContainer) {
+        effectsContainer.appendChild(effect);
+        
+        setTimeout(() => {
+            if (effect.parentNode) {
+                effect.parentNode.removeChild(effect);
+            }
+        }, 2000);
+    }
+}
+
+// 升级经验系统
+function gainExp(amount = 10) {
+    petState.exp += amount;
+    const expNeeded = petState.level * 100;
+    
+    if (petState.exp >= expNeeded) {
+        petState.level++;
+        petState.exp = 0;
+        
+        // 升级特效
+        const petContainer = document.getElementById('pet-container');
+        if (petContainer) {
+            createFloatingEffect(
+                petContainer.offsetLeft + 50,
+                petContainer.offsetTop + 30,
+                '⭐',
+                'heart-effect'
+            );
+        }
+        
+        showPetSpeech('升级了！Level Up! ⭐');
+        playPetAnimation('pet-excited', 1200);
+    }
+    
+    updatePetInfoDisplay();
+}
+
+// 宠物互动动画
+function playPetAnimation(animationClass, duration = 1000) {
+    const petContainer = document.getElementById('pet-container');
+    if (petContainer) {
+        petContainer.classList.add(animationClass);
+        setTimeout(() => {
+            petContainer.classList.remove(animationClass);
+        }, duration);
+    }
+}
+
+// 更新宠物显示
+function updatePetDisplay() {
+    const petEmoji = document.getElementById('pet-emoji');
+    const happinessBar = document.getElementById('pet-happiness');
+    const hungerBar = document.getElementById('pet-hunger');
+    const happinessText = document.getElementById('happiness-text');
+    const hungerText = document.getElementById('hunger-text');
+    
+    if (petEmoji) {
+        petEmoji.textContent = pets[petState.currentPetIndex].emoji;
+        petEmoji.title = pets[petState.currentPetIndex].name;
+    }
+    
+    if (happinessBar && happinessText) {
+        happinessBar.style.width = petState.happiness + '%';
+        happinessText.textContent = petState.happiness;
+        
+        if (petState.happiness < 30) {
+            happinessBar.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
+        } else if (petState.happiness < 60) {
+            happinessBar.style.background = 'linear-gradient(90deg, #f39c12, #e67e22)';
+        } else {
+            happinessBar.style.background = 'linear-gradient(90deg, #ff6b6b, #ff8e8e)';
+        }
+    }
+    
+    if (hungerBar && hungerText) {
+        hungerBar.style.width = petState.hunger + '%';
+        hungerText.textContent = petState.hunger;
+        
+        if (petState.hunger < 30) {
+            hungerBar.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
+        } else if (petState.hunger < 60) {
+            hungerBar.style.background = 'linear-gradient(90deg, #f39c12, #e67e22)';
+        } else {
+            hungerBar.style.background = 'linear-gradient(90deg, #4ecdc4, #6ee8dd)';
+        }
+    }
+    
+    updatePetActionButtons();
+    updatePetMood();
+    savePetState();
+}
+
+// 更新宠物操作按钮状态
+function updatePetActionButtons() {
+    const feedBtn = document.getElementById('feed-pet');
+    const playBtn = document.getElementById('play-pet');
+    
+    if (feedBtn) {
+        feedBtn.disabled = petState.hunger >= 90;
+        feedBtn.title = petState.hunger >= 90 ? '小宠物不饿哦！' : '给小宠物喂食';
+    }
+    
+    if (playBtn) {
+        playBtn.disabled = petState.happiness >= 90 || petState.energy < 20;
+        playBtn.title = petState.happiness >= 90 ? '小宠物很开心！' : (petState.energy < 20 ? '小宠物太累了' : '和小宠物玩耍');
+    }
+}
+
+// 更新宠物信息显示
+function updatePetInfoDisplay() {
+    const nameElement = document.getElementById('pet-name');
+    const levelElement = document.getElementById('pet-level');
+    const expElement = document.getElementById('pet-exp');
+    const energyBar = document.getElementById('pet-energy');
+    const energyText = document.getElementById('energy-text');
+    
+    if (nameElement) {
+        nameElement.textContent = pets[petState.currentPetIndex].name;
+    }
+    
+    if (levelElement) {
+        levelElement.textContent = `Lv.${petState.level}`;
+    }
+    
+    if (expElement) {
+        const expNeeded = petState.level * 100;
+        expElement.textContent = `${petState.exp}/${expNeeded}`;
+    }
+    
+    if (energyBar && energyText) {
+        energyBar.style.width = petState.energy + '%';
+        energyText.textContent = petState.energy;
+        
+        if (petState.energy < 30) {
+            energyBar.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
+        } else if (petState.energy < 60) {
+            energyBar.style.background = 'linear-gradient(90deg, #f39c12, #e67e22)';
+        } else {
+            energyBar.style.background = 'linear-gradient(90deg, #9c27b0, #e1bee7)';
+        }
+    }
+}
+
+// 升级的宠物操作功能
+function setupUpgradedPetControls() {
+    // 喂食按钮
+    const feedBtn = document.getElementById('feed-pet');
+    if (feedBtn) {
+        feedBtn.addEventListener('click', function() {
+            if (petState.hunger < 90) {
+                petState.hunger = Math.min(100, petState.hunger + 20);
+                petState.happiness = Math.min(100, petState.happiness + 5);
+                gainExp(10);
+                playPetAnimation('pet-eating', 800);
+                updatePetDisplay();
+                petSpeak('happy');
+                
+                this.textContent = '🍖 好香！';
+                setTimeout(() => {
+                    this.textContent = '🍖 喂食';
+                }, 1500);
+            }
+        });
+    }
+    
+    // 玩耍按钮
+    const playBtn = document.getElementById('play-pet');
+    if (playBtn) {
+        playBtn.addEventListener('click', function() {
+            if (petState.happiness < 90 && petState.energy > 20) {
+                petState.happiness = Math.min(100, petState.happiness + 25);
+                petState.energy = Math.max(0, petState.energy - 10);
+                gainExp(15);
+                playPetAnimation('pet-excited', 600);
+                updatePetDisplay();
+                petSpeak('playful');
+                
+                this.textContent = '🎾 好开心！';
+                setTimeout(() => {
+                    this.textContent = '🎾 玩耍';
+                }, 1500);
+            }
+        });
+    }
+    
+    // 休息按钮
+    const sleepBtn = document.getElementById('pet-sleep');
+    if (sleepBtn) {
+        sleepBtn.addEventListener('click', function() {
+            petState.happiness = Math.min(100, petState.happiness + 10);
+            petState.energy = Math.min(100, petState.energy + 30);
+            gainExp(8);
+            playPetAnimation('pet-sleepy', 2000);
+            updatePetDisplay();
+            petSpeak('sleepy');
+            
+            this.textContent = '💤 zzz...';
+            setTimeout(() => {
+                this.textContent = '💤 休息';
+            }, 2000);
+        });
+    }
+    
+    // 换宠物按钮
+    const changeBtn = document.getElementById('change-pet');
+    if (changeBtn) {
+        changeBtn.addEventListener('click', function() {
+            petState.currentPetIndex = (petState.currentPetIndex + 1) % pets.length;
+            updatePetDisplay();
+            updatePetInfoDisplay();
+            
+            const newPet = pets[petState.currentPetIndex];
+            this.textContent = `🔄 ${newPet.name}`;
+            setTimeout(() => {
+                this.textContent = '🔄 换宠物';
+                petSpeak('greeting');
+            }, 1500);
+        });
+    }
+    
+    // 礼物按钮
+    const giftBtn = document.getElementById('give-gift');
+    if (giftBtn) {
+        giftBtn.addEventListener('click', function() {
+            const gifts = ['🎁', '🌟', '💎', '🏆', '🎈'];
+            const randomGift = gifts[Math.floor(Math.random() * gifts.length)];
+            
+            petState.happiness = Math.min(100, petState.happiness + 30);
+            gainExp(20);
+            
+            const petContainer = document.getElementById('pet-container');
+            if (petContainer) {
+                createFloatingEffect(
+                    petContainer.offsetLeft + Math.random() * 100,
+                    petContainer.offsetTop + Math.random() * 50,
+                    randomGift
+                );
+            }
+            
+            petSpeak('love');
+            playPetAnimation('pet-excited', 1000);
+            updatePetDisplay();
+            
+            this.textContent = '🎁 好开心！';
+            setTimeout(() => {
+                this.textContent = '🎁 礼物';
+            }, 2000);
+        });
+    }
+    
+    // 洗澡按钮
+    const bathBtn = document.getElementById('pet-bath');
+    if (bathBtn) {
+        bathBtn.addEventListener('click', function() {
+            petState.happiness = Math.min(100, petState.happiness + 15);
+            petState.energy = Math.min(100, petState.energy + 10);
+            gainExp(10);
+            
+            // 泡泡特效
+            const petContainer = document.getElementById('pet-container');
+            if (petContainer) {
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => {
+                        createFloatingEffect(
+                            petContainer.offsetLeft + Math.random() * 80,
+                            petContainer.offsetTop + Math.random() * 60,
+                            '🫧'
+                        );
+                    }, i * 200);
+                }
+            }
+            
+            petSpeak('happy');
+            playPetAnimation('pet-dancing', 1500);
+            updatePetDisplay();
+            
+            this.textContent = '🛁 好舒服！';
+            setTimeout(() => {
+                this.textContent = '🛁 洗澡';
+            }, 2500);
+        });
+    }
+}
+
+// 天气系统
+function setupWeatherSystem() {
+    const weatherButtons = document.querySelectorAll('.weather-btn');
+    
+    weatherButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const weather = this.dataset.weather;
+            changeWeather(weather);
+            
+            weatherButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+}
+
+function changeWeather(weather) {
+    petState.weather = weather;
+    
+    // 移除所有天气效果
+    document.querySelectorAll('.weather-particle').forEach(particle => {
+        particle.classList.remove('active');
+    });
+    
+    // 应用新天气
+    const weatherMap = {
+        sunny: 'stars',
+        rainy: 'rain',
+        snowy: 'snow',
+        starry: 'stars'
+    };
+    
+    const weatherElement = document.getElementById(weatherMap[weather]);
+    if (weatherElement) {
+        weatherElement.classList.add('active');
+    }
+    
+    // 宠物对天气的反应
+    const weatherReactions = {
+        sunny: ['好温暖呀！', '阳光真舒服！', '天气真好！'],
+        rainy: ['下雨了呢～', '雨声好听！', '湿润的空气'],
+        snowy: ['好冷呀！', '雪花好美！', '想要温暖的抱抱'],
+        starry: ['星星好漂亮！', '夜晚真美妙', '许个愿吧！']
+    };
+    
+    if (weatherReactions[weather]) {
+        setTimeout(() => {
+            showPetSpeech(weatherReactions[weather][Math.floor(Math.random() * weatherReactions[weather].length)]);
+        }, 500);
+    }
+    
+    savePetState();
+}
+
+// 房间物品互动
+function setupRoomItemsInteraction() {
+    // 鱼缸互动
+    const fishTank = document.getElementById('fish-tank');
+    if (fishTank) {
+        fishTank.addEventListener('click', function() {
+            petState.happiness = Math.min(100, petState.happiness + 5);
+            gainExp(5);
+            
+            createFloatingEffect(
+                this.offsetLeft,
+                this.offsetTop,
+                '🐠'
+            );
+            
+            showPetSpeech(['好漂亮的鱼！', '游来游去～', '想和鱼鱼玩'][Math.floor(Math.random() * 3)]);
+            updatePetDisplay();
+        });
+    }
+    
+    // 植物互动
+    const plant = document.getElementById('plant');
+    if (plant) {
+        plant.addEventListener('click', function() {
+            petState.energy = Math.min(100, petState.energy + 8);
+            gainExp(5);
+            
+            createFloatingEffect(
+                this.offsetLeft,
+                this.offsetTop,
+                '💧'
+            );
+            
+            this.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 500);
+            
+            showPetSpeech(['空气更清新了！', '绿色真舒服', '植物长高了'][Math.floor(Math.random() * 3)]);
+            updatePetDisplay();
+        });
+    }
+    
+    // 音乐盒互动
+    const musicBox = document.getElementById('music-box');
+    if (musicBox) {
+        musicBox.addEventListener('click', function() {
+            petState.happiness = Math.min(100, petState.happiness + 10);
+            gainExp(8);
+            
+            // 音符特效
+            const notes = ['🎵', '🎶', '♪', '♫'];
+            for (let i = 0; i < 4; i++) {
+                setTimeout(() => {
+                    createFloatingEffect(
+                        this.offsetLeft + Math.random() * 30,
+                        this.offsetTop + Math.random() * 30,
+                        notes[Math.random() * notes.length | 0]
+                    );
+                }, i * 300);
+            }
+            
+            showPetSpeech(['好听的音乐！', '想要跳舞～', '心情变好了'][Math.floor(Math.random() * 3)]);
+            playPetAnimation('pet-dancing', 2000);
+            updatePetDisplay();
+        });
+    }
+    
+    // 增强原有物品
+    const foodBowl = document.getElementById('food-bowl');
+    if (foodBowl) {
+        foodBowl.addEventListener('click', function() {
+            if (petState.hunger < 90) {
+                petState.hunger = Math.min(100, petState.hunger + 25);
+                petState.happiness = Math.min(100, petState.happiness + 5);
+                gainExp(10);
+                
+                createFloatingEffect(
+                    this.offsetLeft,
+                    this.offsetTop,
+                    pets[petState.currentPetIndex].favoriteFood
+                );
+                
+                petSpeak('happy');
+                playPetAnimation('pet-eating', 1500);
+                updatePetDisplay();
+            }
+        });
+    }
+    
+    const toyBall = document.getElementById('toy-ball');
+    if (toyBall) {
+        toyBall.addEventListener('click', function() {
+            if (petState.happiness < 90 && petState.energy > 20) {
+                petState.happiness = Math.min(100, petState.happiness + 20);
+                petState.energy = Math.max(0, petState.energy - 10);
+                gainExp(15);
+                
+                this.style.transform = 'scale(1.3) translateY(-10px)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 300);
+                
+                createFloatingEffect(
+                    this.offsetLeft,
+                    this.offsetTop,
+                    '⚡'
+                );
+                
+                petSpeak('playful');
+                playPetAnimation('pet-excited', 1000);
+                updatePetDisplay();
+            }
+        });
+    }
+    
+    const bed = document.getElementById('bed');
+    if (bed) {
+        bed.addEventListener('click', function() {
+            if (petState.energy < 90) {
+                petState.energy = Math.min(100, petState.energy + 30);
+                petState.happiness = Math.min(100, petState.happiness + 10);
+                gainExp(8);
+                
+                createFloatingEffect(
+                    this.offsetLeft,
+                    this.offsetTop,
+                    '💤'
+                );
+                
+                petSpeak('sleepy');
+                playPetAnimation('pet-sleepy', 3000);
+                updatePetDisplay();
+            }
+        });
+    }
+}
+
+// 房间主题切换
+function setupRoomControls() {
+    const roomThemeButtons = document.querySelectorAll('.room-theme-btn');
+    const roomBackground = document.getElementById('room-background');
+    
+    if (roomThemeButtons.length > 0 && roomBackground) {
+        roomThemeButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const theme = this.dataset.room;
+                
+                roomBackground.className = '';
+                roomBackground.classList.add(`room-theme-${theme}`);
+                
+                roomThemeButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                petState.room = theme;
+                savePetState();
+                
+                const originalText = this.textContent;
+                this.textContent = this.textContent + ' ✨';
+                setTimeout(() => {
+                    this.textContent = originalText;
+                }, 1000);
+            });
+        });
+        
+        const savedThemeBtn = document.querySelector(`[data-room="${petState.room}"]`);
+        if (savedThemeBtn) {
+            savedThemeBtn.click();
+        }
+    }
+}
+
+// 增强的宠物点击互动
+function setupPetInteraction() {
+    const virtualPet = document.getElementById('virtual-pet');
+    if (virtualPet) {
+        virtualPet.addEventListener('click', function(e) {
+            const reactions = ['✨', '💕', '🌟', '💖', '🎉', '🌈', '⭐'];
+            const randomReaction = reactions[Math.floor(Math.random() * reactions.length)];
+            
+            // 使用房间内的固定坐标
+const petContainer = document.getElementById('pet-container');
+const containerRect = petContainer.getBoundingClientRect();
+const roomRect = document.getElementById('effects-container').getBoundingClientRect();
+const x = containerRect.left - roomRect.left + 50;
+const y = containerRect.top - roomRect.top + 30;
+
+createFloatingEffect(x, y, randomReaction, 'heart-effect');
+            
+            petState.happiness = Math.min(100, petState.happiness + 3);
+            gainExp(3);
+            updatePetDisplay();
+            
+            if (Math.random() < 0.4) {
+                petSpeak();
+            }
+            
+            const animations = ['pet-excited', 'pet-dancing'];
+            if (Math.random() < 0.3) {
+                playPetAnimation(animations[Math.floor(Math.random() * animations.length)], 800);
+            }
+        });
+    }
+}
+
+// 随机事件系统
+function setupRandomEvents() {
+    setInterval(() => {
+        if (Math.random() < 0.1) {
+            triggerRandomEvent();
+        }
+    }, 30000);
+}
+
+function triggerRandomEvent() {
+    const events = [
+        {
+            message: '发现了闪亮的星星！',
+            effect: () => {
+                petState.happiness = Math.min(100, petState.happiness + 15);
+                gainExp(20);
+                createFloatingEffect(150, 100, '⭐', 'heart-effect');
+            }
+        },
+        {
+            message: '找到了美味的食物！',
+            effect: () => {
+                petState.hunger = Math.min(100, petState.hunger + 20);
+                createFloatingEffect(150, 100, '🍎');
+            }
+        },
+        {
+            message: '感受到了主人的爱！',
+            effect: () => {
+                petState.happiness = Math.min(100, petState.happiness + 25);
+                createFloatingEffect(150, 100, '💕', 'heart-effect');
+            }
+        }
+    ];
+    
+    const randomEvent = events[Math.floor(Math.random() * events.length)];
+    showPetSpeech(randomEvent.message);
+    randomEvent.effect();
+    updatePetDisplay();
+}
+
+// 自动状态衰减
+function startPetStatusDecay() {
+    setInterval(() => {
+        let decayRate = 1;
+        
+        if (petState.weather === 'rainy') decayRate *= 0.8;
+        if (petState.weather === 'snowy') decayRate *= 1.2;
+        
+        const hour = new Date().getHours();
+        if (hour >= 22 || hour <= 6) {
+            decayRate *= 0.5;
+        }
+        
+        if (petState.hunger > 0) {
+            petState.hunger = Math.max(0, petState.hunger - decayRate);
+        }
+        if (petState.happiness > 0) {
+            petState.happiness = Math.max(0, petState.happiness - decayRate * 0.5);
+        }
+        if (petState.energy > 0) {
+            petState.energy = Math.max(0, petState.energy - decayRate * 0.3);
+        }
+        
+        updatePetDisplay();
+        
+        if (petState.hunger < 20 && Math.random() < 0.3) {
+            petSpeak('hungry');
+        } else if (petState.energy < 20 && Math.random() < 0.3) {
+            petSpeak('sleepy');
+        }
+        
+    }, 10000);
+}
+
+// 初始化所有升级功能
+function initUpgradedPetSystem() {
+    console.log('正在初始化升级的宠物系统...');
+    
+    loadPetState();
+    updatePetDisplay();
+    updatePetInfoDisplay();
+    updatePetMood();
+    
+    setupUpgradedPetControls();
+    setupRoomItemsInteraction();
+    setupWeatherSystem();
+    setupRoomControls();
+    setupPetInteraction();
+    setupRandomEvents();
+    startPetStatusDecay();
+    
+    // 设置默认天气
+    const defaultWeatherBtn = document.querySelector('.weather-btn[data-weather="sunny"]');
+    if (defaultWeatherBtn) {
+        defaultWeatherBtn.classList.add('active');
+    }
+    
+    // 应用保存的天气
+    if (petState.weather) {
+        changeWeather(petState.weather);
+        const savedWeatherBtn = document.querySelector(`[data-weather="${petState.weather}"]`);
+        if (savedWeatherBtn) {
+            document.querySelectorAll('.weather-btn').forEach(btn => btn.classList.remove('active'));
+            savedWeatherBtn.classList.add('active');
+        }
+    }
+    
+    // 初始问候
+    setTimeout(() => {
+        petSpeak('greeting');
+    }, 1000);
+    
+    // 每小时自动保存一次
+    setInterval(() => {
+        savePetState();
+    }, 60 * 60 * 1000);
+    
+      //初始化商店系统
+      initShopSystem();
+      startCoinSystem();
+console.log('升级的宠物系统已初始化完成！');
+    console.log('当前宠物状态:', petState);
+}
+
+// 额外的辅助函数
+function getPetPersonality() {
+    return pets[petState.currentPetIndex].personality;
+}
+
+function getPetFavoriteFood() {
+    return pets[petState.currentPetIndex].favoriteFood;
+}
+
+// 宠物状态检查函数
+function checkPetNeeds() {
+    const warnings = [];
+    
+    if (petState.hunger < 30) {
+        warnings.push('宠物饿了！');
+    }
+    if (petState.happiness < 30) {
+        warnings.push('宠物不开心！');
+    }
+    if (petState.energy < 30) {
+        warnings.push('宠物累了！');
+    }
+    
+    return warnings;
+}
+
+// 宠物护理建议
+function getPetCareAdvice() {
+    const advice = [];
+    
+    if (petState.hunger < 50) {
+        advice.push('给宠物喂点' + pets[petState.currentPetIndex].favoriteFood);
+    }
+    if (petState.happiness < 50) {
+        advice.push('和宠物玩耍或给它礼物');
+    }
+    if (petState.energy < 50) {
+        advice.push('让宠物休息一下');
+    }
+    if (petState.level < 5) {
+        advice.push('多互动可以让宠物升级哦');
+    }
+    
+    return advice.length > 0 ? advice : ['宠物状态很好，继续保持！'];
+}
+
+// 导出宠物数据（可选功能）
+function exportPetData() {
+    const petData = {
+        ...petState,
+        petInfo: pets[petState.currentPetIndex],
+        exportTime: new Date().toLocaleString(),
+        version: 'v14.3'
+    };
+    
+    const dataStr = JSON.stringify(petData, null, 2);
+    console.log('宠物数据导出:', dataStr);
+    
+    // 可以创建下载链接
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `pet_data_${new Date().getTime()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// 重置宠物数据（慎用）
+function resetPetData() {
+    if (confirm('确定要重置宠物数据吗？这会清除所有进度！')) {
+        localStorage.removeItem('magicGarden_petState');
+        petState = {
+            currentPetIndex: 0,
+            happiness: 100,
+            hunger: 100,
+            energy: 100,
+            level: 1,
+            exp: 0,
+            lastInteraction: Date.now(),
+            room: 'cozy',
+            weather: 'sunny',
+            mood: 'happy'
+        };
+        updatePetDisplay();
+        updatePetInfoDisplay();
+        updatePetMood();
+        showPetSpeech('重新开始！');
+    }
+}
+
+// 调试函数（开发时使用）
+function debugPetSystem() {
+    console.log('=== 宠物系统调试信息 ===');
+    console.log('当前宠物:', pets[petState.currentPetIndex]);
+    console.log('宠物状态:', petState);
+    console.log('护理建议:', getPetCareAdvice());
+    console.log('状态警告:', checkPetNeeds());
+    console.log('DOM元素检查:');
+    console.log('- 宠物容器:', !!document.getElementById('virtual-pet'));
+    console.log('- 语音气泡:', !!document.getElementById('pet-speech-bubble'));
+    console.log('- 特效容器:', !!document.getElementById('effects-container'));
+    console.log('- 天气按钮:', document.querySelectorAll('.weather-btn').length);
+    console.log('====================');
+}
     const rootElement = document.documentElement;
     if (!rootElement) console.error("[LOG] CRITICAL: rootElement (html) 未找到!");
 
@@ -328,39 +1878,40 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // 小g修改处5：新增 setupPaginationControls 函数，用于绑定分页按钮的点击事件
     function setupPaginationControls(moduleName) {
-        const prevButton = document.getElementById(`${moduleName}-prev-btn`);
-        const nextButton = document.getElementById(`${moduleName}-next-btn`);
-        const moduleConfig = moduleData[moduleName];
+    const prevButton = document.getElementById(`${moduleName}-prev-btn`);
+    const nextButton = document.getElementById(`${moduleName}-next-btn`);
+    const moduleConfig = moduleData[moduleName];
 
-        if (!prevButton || !nextButton || !moduleConfig) {
-            console.warn(`[LOG] 未能为 ${moduleName} 设置分页控件事件，缺少元素或数据。`);
-            return;
-        }
-
-        // 移除旧的事件监听器，避免重复绑定（如果之前有的话）
-        prevButton.removeEventListener('click', handlePaginationClick);
-        nextButton.removeEventListener('click', handlePaginationClick);
-
-        // 添加新的事件监听器
-        prevButton.addEventListener('click', handlePaginationClick);
-        nextButton.addEventListener('click', handlePaginationClick);
-
-        function handlePaginationClick(event) {
-            const button = event.target;
-            if (button.classList.contains('prev')) {
-                if (moduleConfig.currentPage > 1) {
-                    moduleConfig.currentPage--;
-                    displayModuleItems(moduleName);
-                }
-            } else if (button.classList.contains('next')) {
-                const totalPages = Math.ceil(moduleConfig.items.length / itemsPerPage) || 1;
-                if (moduleConfig.currentPage < totalPages) { // 使用 < totalPages 而不是 <= totalPages
-                    moduleConfig.currentPage++;
-                    displayModuleItems(moduleName);
-                }
-            }
-        }
+    if (!prevButton || !nextButton || !moduleConfig) {
+        console.warn(`未能为 ${moduleName} 设置分页控件事件，缺少元素或数据。`);
+        return;
     }
+
+    // 检查是否已经绑定过事件
+    if (prevButton.hasAttribute('data-pagination-initialized')) {
+        return;
+    }
+
+    // 标记已初始化
+    prevButton.setAttribute('data-pagination-initialized', 'true');
+    nextButton.setAttribute('data-pagination-initialized', 'true');
+
+    // 添加事件监听器
+    prevButton.addEventListener('click', function() {
+        if (moduleConfig.currentPage > 1) {
+            moduleConfig.currentPage--;
+            displayModuleItems(moduleName);
+        }
+    });
+
+    nextButton.addEventListener('click', function() {
+        const totalPages = Math.ceil(moduleConfig.items.length / itemsPerPage) || 1;
+        if (moduleConfig.currentPage < totalPages) {
+            moduleConfig.currentPage++;
+            displayModuleItems(moduleName);
+        }
+    });
+}
 
 
     function updatePaginationButtonStyles(moduleName) { const prevButton = document.getElementById(`${moduleName}-prev-btn`); const nextButton = document.getElementById(`${moduleName}-next-btn`); if (!prevButton || !nextButton) return; const currentThemeName = rootElement.style.getPropertyValue('--current-theme-name') || 'blue'; const currentThemeColors = themes[currentThemeName]; if (!currentThemeColors) return;[prevButton, nextButton].forEach(btn => { if (btn.disabled) { btn.style.backgroundColor = currentThemeColors['--pagination-btn-disabled-bg']; btn.style.color = currentThemeColors['--pagination-btn-disabled-text']; } else { btn.style.backgroundColor = currentThemeColors['--pagination-btn-bg']; btn.style.color = currentThemeColors['--pagination-btn-text']; } }); }
@@ -369,7 +1920,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     function setDefaultTheme() { const defaultThemeName = 'blue'; rootElement.style.setProperty('--current-theme-name', defaultThemeName); const defaultTheme = themes[defaultThemeName]; if (defaultTheme) { for (const variable in defaultTheme) { rootElement.style.setProperty(variable, defaultTheme[variable]); } } updateStaminaVisuals(); updateModuleButtonStyles(); updateAllPaginationButtonsStyle(); console.log("[LOG] 默认主题 (Blue) 已应用。"); }
     
     setDefaultTheme();
-
+    // 初始化宠物系统
+initUpgradedPetSystem();
     console.log("[魔法乐园日志 V14.2 最新数据链接版] 核心脚本执行完毕，事件监听器已设置。数据正在从Gist异步加载...");
 });
 </script>
