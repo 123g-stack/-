@@ -7,10 +7,10 @@ from datetime import datetime
 
 app = FastAPI()
 
-CLAUDE_API_KEY = os.environ.get("CLAUDE_API_KEY")
-DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY")
-MEM0_API_KEY = os.environ.get("MEM0_API_KEY")
-GATEWAY_SECRET = os.environ.get("GATEWAY_SECRET", "")
+CLAUDE_API_KEY = os.environ.get("CLAUDE_API_KEY", "").strip()
+DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY", "").strip()
+MEM0_API_KEY = os.environ.get("MEM0_API_KEY", "").strip()
+GATEWAY_SECRET = os.environ.get("GATEWAY_SECRET", "").strip()
 
 USER_ID = "sweet"
 
@@ -148,4 +148,4 @@ async def proxy_messages(request: Request):
 
 @app.get("/health")
 async def health():
-    return {"status": "ok"} 
+    return {"status": "ok"}
