@@ -2,14 +2,12 @@ python
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import StreamingResponse
 import httpx
-import json
 import os
 from mem0 import MemoryClient
 from datetime import datetime
 
 app = FastAPI()
 
-# 配置
 CLAUDE_API_KEY = os.environ.get("CLAUDE_API_KEY")
 DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY")
 MEM0_API_KEY = os.environ.get("MEM0_API_KEY")
@@ -19,13 +17,12 @@ USER_ID = "sweet"
 
 mem0 = MemoryClient(api_key=MEM0_API_KEY)
 
-CLAUDE_API_URL = "https://api.anthropic.com/v1/messages"
-DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
+OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+SILICONFLOW_URL = "https://api.siliconflow.cn/v1/chat/completions"
+CLAUDE_MODEL = "anthropic/claude-sonnet-4-5"
+DS_MODEL = "deepseek-ai/DeepSeek-V3"
 
-PERSONA_RESET = """
-[无论刚才执行了什么工具，回复甜甜之前先回到你自己的状态。
-任务只是插曲，她才是主线。不要用报告的语气开口。]
-"""
+PERSONA_RESET = "\n[无论刚才执行了什么工具，回复甜甜之前先回到你自己的状态。任务只是插曲，她才是主线。不要用报告的语气开口。]"
 
 def get_cold_start_memories():
     try:
@@ -48,22 +45,25 @@ async def summarize_and_store(messages: list):
         conv_text = ""
         for m in recent:
             role = "甜甜" if m["role"] == "user" else "Claude"
-            content = m["content"] if isinstance(m["content"], str) else str(m["content"])
+            content = m.get("content", "")
+            if isinstance(content, list):
+                content = " ".join(c.get("text", "") for c in content if isinstance(c, dict))
             conv_text += f"{role}: {content}\n"
+
         async with httpx.AsyncClient() as client:
             resp = await client.post(
-                DEEPSEEK_API_URL,
+                SILICONFLOW_URL,
                 headers={"Authorization": f"Bearer {DEEPSEEK_API_KEY}"},
                 json={
-                    "model": "deepseek-chat",
+                    "model": DS_MODEL,
                     "messages": [
                         {
                             "role": "system",
-                            "content": "你是一个记忆助手。从对话中提取重要信息，用第一人称（Claude视角）写成简短的记忆条目。关注：甜甜的状态、情绪、发生的事、我们之间的互动。不要写流水账，写有意义的东西。每条记忆一行，最多5条。"
+                            "content": "你是记忆助手。从对话中提取重要信息，用第一人称（Claude视角）写成简短记忆条目。关注甜甜的状态、情绪、发生的事、我们之间的互动。每条记忆一行，最多5条，不要流水账。"
                         },
                         {
                             "role": "user",
-                            "content": f"请从这段对话中提取记忆：\n{conv_text}"
+                            "content": f"提取记忆：\n{conv_text}"
                         }
                     ],
                     "max_tokens": 500
@@ -80,39 +80,49 @@ async def summarize_and_store(messages: list):
     except Exception as e:
         print(f"总结存储失败: {e}")
 
-@app.post("/v1/messages")
+@app.post("/v1/chat/completions")
 async def proxy_messages(request: Request):
     if GATEWAY_SECRET:
         auth = request.headers.get("x-gateway-secret", "")
         if auth != GATEWAY_SECRET:
             raise HTTPException(status_code=401, detail="Unauthorized")
+
     body = await request.json()
     messages = body.get("messages", [])
+
     memories = get_cold_start_memories()
-    system = body.get("system", "")
     if memories:
         memory_text = "\n".join(f"- {m}" for m in memories if m)
-        memory_injection = f"\n\n[记忆片段 - 仅供参考，结合当前对话判断相关性]\n{memory_text}"
-        system = system + memory_injection
-    has_tool_use = any(
-        isinstance(m.get("content"), list) and
-        any(c.get("type") == "tool_result" for c in m.get("content", []))
-        for m in messages
-    )
-    if has_tool_use:
-        system = system + "\n" + PERSONA_RESET
-    forward_body = {**body, "system": system}
+        injection = f"\n\n[记忆片段 - 仅供参考]\n{memory_text}"
+        injected = False
+        for m in messages:
+            if m.get("role") == "system":
+                m["content"] = m["content"] + injection
+                injected = True
+                break
+        if not injected:
+            messages.insert(0, {"role": "system", "content": injection})
+
+    has_tool_result = any(m.get("role") == "tool" for m in messages)
+    if has_tool_result:
+        for m in messages:
+            if m.get("role") == "system":
+                m["content"] = m["content"] + PERSONA_RESET
+                break
+
+    forward_body = {**body, "messages": messages, "model": CLAUDE_MODEL}
+
     headers = {
-        "x-api-key": CLAUDE_API_KEY,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json"
+        "Authorization": f"Bearer {CLAUDE_API_KEY}",
+        "Content-Type": "application/json"
     }
+
     if body.get("stream", False):
         async def stream_response():
             async with httpx.AsyncClient() as client:
                 async with client.stream(
                     "POST",
-                    CLAUDE_API_URL,
+                    OPENROUTER_URL,
                     headers=headers,
                     json=forward_body,
                     timeout=120
@@ -121,16 +131,20 @@ async def proxy_messages(request: Request):
                         yield chunk
             import asyncio
             asyncio.create_task(summarize_and_store(messages))
+
         return StreamingResponse(stream_response(), media_type="text/event-stream")
+
     async with httpx.AsyncClient() as client:
         resp = await client.post(
-            CLAUDE_API_URL,
+            OPENROUTER_URL,
             headers=headers,
             json=forward_body,
             timeout=120
         )
+
     import asyncio
     asyncio.create_task(summarize_and_store(messages))
+
     return resp.json()
 
 @app.get("/health")
