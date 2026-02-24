@@ -148,4 +148,4 @@ async def proxy_messages(request: Request):
 
 @app.get("/health")
 async def health():
-    return {"status": "ok"}
+    return {"status": "ok"} 
